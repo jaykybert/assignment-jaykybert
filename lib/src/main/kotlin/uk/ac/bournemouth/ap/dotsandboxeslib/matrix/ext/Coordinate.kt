@@ -32,7 +32,7 @@ inline class Coordinate<out T> constructor(@PublishedApi internal val packed: In
 }
 
 /**
- * Helper function that implemens [SparseMatrix.isValid] for coordinates
+ * Helper function that implements [SparseMatrix.isValid] for coordinates
  */
 fun <T> SparseMatrix<T>.isValid(pos: Coordinate<T>): Boolean = isValid(pos.x, pos.y)
 

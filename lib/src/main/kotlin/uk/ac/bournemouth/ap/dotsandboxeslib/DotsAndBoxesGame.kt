@@ -131,7 +131,7 @@ interface DotsAndBoxesGame {
          */
         val boxX: Int
         /**
-         * The x coordinate of the box as related to [DotsAndBoxesGame.boxes].
+         * The y coordinate of the box as related to [DotsAndBoxesGame.boxes].
          */
         val boxY: Int
 
