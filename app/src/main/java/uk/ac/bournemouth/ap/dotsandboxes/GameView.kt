@@ -4,13 +4,19 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import org.example.student.dotsboxgame.StudentDotsBoxGame
+import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
 import uk.ac.bournemouth.ap.dotsandboxeslib.Player
 
-class GameView(private val numOfCols: Int, private val numOfRows: Int, players: List<Player>, context: Context?): View(context) {
+class GameView(private val numOfCols: Int,
+               private val numOfRows: Int,
+               context: Context?): View(context) {
 
-    private var dotsBoxGame: StudentDotsBoxGame = StudentDotsBoxGame(numOfCols, numOfRows, players)
+    //private var dotsBoxGame: StudentDotsBoxGame = StudentDotsBoxGame(numOfCols, numOfRows)
 
     private var bgPaint: Paint = Paint().apply {
         style = Paint.Style.FILL
@@ -22,6 +28,27 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int, players: 
     }
 
     // TODO: Add listener implementation.
+    // TODO: Figure out how to pass a list of players to StudentDotsBoxGame.
+
+    private val detectInput = GestureDetector(context, GestureListener())
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return detectInput.onTouchEvent(event) || super.onTouchEvent(event)
+}
+
+    inner class GestureListener: GestureDetector.SimpleOnGestureListener() {
+
+        override fun onDown(event: MotionEvent): Boolean { return true }
+
+        override fun onSingleTapUp(event: MotionEvent): Boolean {
+            Toast.makeText(context,"Tap Confirmed", Toast.LENGTH_SHORT).show()
+
+            // TODO: Find the closest dots and connect them.
+
+            return true
+        }
+    }
+
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -47,6 +74,4 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int, players: 
             }
         }
     }
-
-    // TODO: Add gesture detection - determine what line was chosen relative to the dots.
 }
