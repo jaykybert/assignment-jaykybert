@@ -58,15 +58,38 @@ class GameView(private val numOfCols: Int,
             val rowFloat: Float = (yPos / spacing)
             val rowTapped: Int = rowFloat.roundToInt()
 
-            if (columnTapped > columnFloat) { // Rounded upwards - right of dot.
-                // Compare horizontal distance with vertical - find smallest.
+
+            val aboveDot: Boolean
+            // Determine if above or below dot.
+            if(rowTapped > rowFloat) { // Rounded upwards - below the dot.
+                Toast.makeText(context, "Below Dot", Toast.LENGTH_SHORT).show()
+                aboveDot = false
+
             }
-            else { // Rounded downwards - left of dot.
-                // Compare horizontal distance with vertical - find smallest.
+            else { // Rounded downwards - above the dot.
+                Toast.makeText(context, "Above Dot", Toast.LENGTH_SHORT).show()
+                aboveDot = true
             }
 
-            Toast.makeText(context,"COL:$columnTapped ROW:$rowTapped", Toast.LENGTH_SHORT).show()
-            // TODO: Find the closest dots and connect them.
+
+            val rightOfDot: Boolean
+            // Determine if left or right of dot.
+            if (columnTapped > columnFloat) { // Rounded upwards - right of dot.
+                rightOfDot = true
+            }
+            else { // Rounded downwards - left of dot.
+                rightOfDot = false
+            }
+
+            // IF right of dot:
+
+            // ELSE left of dot:
+
+
+
+
+
+
 
             return true
         }
