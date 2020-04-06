@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // TODO: Work out how to get the player list here. (???)
-        val gameView = GameView(5, 5, this)
+        val gameView = GameView(3, 3, this)
         setContentView(gameView)
     }
 }

@@ -12,6 +12,8 @@ import org.example.student.dotsboxgame.StudentDotsBoxGame
 import uk.ac.bournemouth.ap.dotsandboxeslib.ComputerPlayer
 import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
 import uk.ac.bournemouth.ap.dotsandboxeslib.Player
+import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
 class GameView(private val numOfCols: Int,
@@ -54,43 +56,26 @@ class GameView(private val numOfCols: Int,
             val yPos: Int = event.y.toInt()
 
             val columnFloat: Float = (xPos / spacing)
-            val columnTapped: Int = columnFloat.roundToInt()
             val rowFloat: Float = (yPos / spacing)
-            val rowTapped: Int = rowFloat.roundToInt()
 
+            val xDot: Float = floor(columnFloat) * spacing + (spacing / 2)
+            val yDot: Float = floor(rowFloat) * spacing + (spacing / 2)
 
-            val aboveDot: Boolean
-            // Determine if above or below dot.
-            if(rowTapped > rowFloat) { // Rounded upwards - below the dot.
-                Toast.makeText(context, "Below Dot", Toast.LENGTH_SHORT).show()
-                aboveDot = false
+            // Determine if user tapped above or below the nearest dot.
+            val aboveDot: Boolean = rowFloat.roundToInt() > rowFloat
 
-            }
-            else { // Rounded downwards - above the dot.
-                Toast.makeText(context, "Above Dot", Toast.LENGTH_SHORT).show()
-                aboveDot = true
-            }
+            // Determine if the user tapped left or right of the nearest dot.
+            val rightOfDot: Boolean = columnFloat.roundToInt() > columnFloat
 
+            val xDelta: Float = abs(xDot - xPos)
+            val yDelta: Float = abs(yDot- yPos)
+            Toast.makeText(context, "dx:$xDelta dy:$yDelta", Toast.LENGTH_SHORT).show()
 
-            val rightOfDot: Boolean
-            // Determine if left or right of dot.
-            if (columnTapped > columnFloat) { // Rounded upwards - right of dot.
-                rightOfDot = true
-            }
-            else { // Rounded downwards - left of dot.
-                rightOfDot = false
-            }
-
-            // IF right of dot:
-
-            // ELSE left of dot:
-
-
-
-
-
-
-
+            // TODO: Find min of xDelta and yDelta - min represents closest axis to the dot.
+            // If yDelta is min - closer on vertical axis, therefore  horizontal line.
+                // Then use whether left or right of dot to connect to the relative one.
+            // If xDelta is min - closer on horizontal axis, therefore vertical line.
+                // Then use whether above or below dot to connect to the relative one.
             return true
         }
     }
