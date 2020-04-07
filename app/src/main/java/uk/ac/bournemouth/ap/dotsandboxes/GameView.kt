@@ -31,8 +31,6 @@ class GameView(private val numOfCols: Int,
         color = Color.BLACK
     }
 
-    // Choose the smallest spacing to allow portrait/landscape use.
-
 
     // TODO: Add listener implementation.
 
@@ -61,21 +59,30 @@ class GameView(private val numOfCols: Int,
             val xDot: Float = floor(columnFloat) * spacing + (spacing / 2)
             val yDot: Float = floor(rowFloat) * spacing + (spacing / 2)
 
-            // Determine if user tapped above or below the nearest dot.
             val aboveDot: Boolean = rowFloat.roundToInt() > rowFloat
-
-            // Determine if the user tapped left or right of the nearest dot.
             val rightOfDot: Boolean = columnFloat.roundToInt() > columnFloat
 
             val xDelta: Float = abs(xDot - xPos)
             val yDelta: Float = abs(yDot- yPos)
-            Toast.makeText(context, "dx:$xDelta dy:$yDelta", Toast.LENGTH_SHORT).show()
 
-            // TODO: Find min of xDelta and yDelta - min represents closest axis to the dot.
-            // If yDelta is min - closer on vertical axis, therefore  horizontal line.
-                // Then use whether left or right of dot to connect to the relative one.
-            // If xDelta is min - closer on horizontal axis, therefore vertical line.
-                // Then use whether above or below dot to connect to the relative one.
+            // if they are the same, preference is given to first arg. Therefore
+            // touch input is biased (slightly) towards producing horizontal lines.
+            if(minOf(yDelta, xDelta) == xDelta) {
+                if(aboveDot) {
+                    // Go to dot above.
+                }
+                else {
+                    // Go to dot below.
+                }
+            }
+            else {
+                if(rightOfDot) {
+                    // Go to right dot.
+                }
+                else {
+                    // Got to left dot.
+                }
+            }
             return true
         }
     }
