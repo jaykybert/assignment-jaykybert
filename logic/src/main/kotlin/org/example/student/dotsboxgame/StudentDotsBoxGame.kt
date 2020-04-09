@@ -49,9 +49,10 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
                 TODO("You need to look up the correct boxes for this to work")
             }
 
+        //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
         override fun drawLine() {
-            TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
             // NOTE read the documentation in the interface, you must also update the current player.
+            fireGameChange()
         }
     }
 
@@ -68,3 +69,4 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
 
     }
 }
+
