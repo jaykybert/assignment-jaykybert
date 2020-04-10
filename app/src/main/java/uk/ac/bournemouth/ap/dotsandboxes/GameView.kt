@@ -2,7 +2,6 @@ package uk.ac.bournemouth.ap.dotsandboxes
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -18,36 +17,47 @@ class GameView(private val numOfCols: Int,
                private val numOfRows: Int,
                context: Context?): View(context) {
 
-    private var dotsBoxGame: StudentDotsBoxGame = StudentDotsBoxGame(numOfCols, numOfRows, listOf(HumanPlayer(), HumanPlayer()))
 
     private var bgPaint: Paint = Paint().apply {
         style = Paint.Style.FILL
-        color = Color.GRAY
+        color = resources.getColor(R.color.backgroundColor)
     }
     private var dotPaint: Paint = Paint().apply {
         style = Paint.Style.FILL
-        color = Color.BLACK
+        color = resources.getColor(R.color.dotColor)
     }
 
 
-    // TODO: Add listener onGameOver implementation.
-    var gameListener = object: DotsAndBoxesGame.GameChangeListener {
+    // Listeners - Game Change & Game Over
+    var gameChangeListener = object: DotsAndBoxesGame.GameChangeListener {
         override fun onGameChange(game: DotsAndBoxesGame) {
             invalidate()
         }
     }
 
+    var gameOverListener = object: DotsAndBoxesGame.GameOverListener {
+        override fun onGameOver(game: DotsAndBoxesGame, scores: List<Pair<Player, Int>>) {
+            // Do something here once the game ends.
+            invalidate()
+        }
+    }
+
+    private var dotsBoxGame: StudentDotsBoxGame =
+        StudentDotsBoxGame(numOfCols, numOfRows, listOf(HumanPlayer(), HumanPlayer()))
+
     init {
-        dotsBoxGame.addOnGameChangeListener(gameListener)
+        dotsBoxGame.addOnGameChangeListener(gameChangeListener)
+        dotsBoxGame.addOnGameOverListener(gameOverListener)
     }
 
 
-    // GESTURE DETECTION
+    // Gesture Detection
     private val detectInput = GestureDetector(context, GestureListener())
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return detectInput.onTouchEvent(event) || super.onTouchEvent(event)
-}
+    }
+
 
     inner class GestureListener: GestureDetector.SimpleOnGestureListener() {
 
@@ -89,21 +99,16 @@ class GameView(private val numOfCols: Int,
                 // (slightly) towards producing horizontal lines.
                 // TODO: Call drawLine() on the StudentLine objects.
                 if (minOf(yDelta, xDelta) == xDelta) {
-                    if (aboveDot) {
-                        // Go to dot above.
+                    if (aboveDot)
                         dotsBoxGame.StudentLine(xDotAxis, (yDotAxis * 2) - 1)
-                    } else {
-                        // Go to dot below.
+                     else
                         dotsBoxGame.StudentLine(xDotAxis, (yDotAxis * 2) + 1)
-                    }
-                } else {
-                    if (rightOfDot) {
-                        // Go to right dot.
+                }
+                else {
+                    if (rightOfDot)
                         dotsBoxGame.StudentLine(xDotAxis, yDotAxis * 2)
-                    } else {
-                        // Got to left dot.
+                    else
                         dotsBoxGame.StudentLine(xDotAxis - 1, yDotAxis * 2)
-                    }
                 }
                 return true
             }
@@ -111,11 +116,11 @@ class GameView(private val numOfCols: Int,
     }
 
 
-    // USER INTERFACE
+    // User Interface
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val dotSize: Float = 10.0F
+        val dotSize = 10.0F
 
         val xSpacing: Float = width.toFloat() / (numOfCols+1).toFloat()
         val ySpacing: Float = height.toFloat() / (numOfRows+1).toFloat()
