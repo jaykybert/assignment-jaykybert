@@ -28,14 +28,14 @@ class GameView(private val numOfCols: Int,
     }
 
 
-    // Listeners - Game Change & Game Over
-    var gameChangeListener = object: DotsAndBoxesGame.GameChangeListener {
+    // Listeners
+    private var gameChangeListener = object: DotsAndBoxesGame.GameChangeListener {
         override fun onGameChange(game: DotsAndBoxesGame) {
             invalidate()
         }
     }
 
-    var gameOverListener = object: DotsAndBoxesGame.GameOverListener {
+    private var gameOverListener = object: DotsAndBoxesGame.GameOverListener {
         override fun onGameOver(game: DotsAndBoxesGame, scores: List<Pair<Player, Int>>) {
             // Do something here once the game ends.
             invalidate()
@@ -85,11 +85,10 @@ class GameView(private val numOfCols: Int,
             val xDelta: Float = abs(xDot - xPos)
             val yDelta: Float = abs(yDot - yPos)
 
-            //
             val xDotAxis: Int = floor(columnFloat.toDouble()).toInt()
             val yDotAxis: Int = floor(rowFloat.toDouble()).toInt()
 
-            if (xDotAxis > numOfCols + 1 || yDotAxis > numOfRows + 1) {
+            if (xDotAxis > numOfCols || yDotAxis > numOfRows) {
                 Toast.makeText(context, "Invalid Input. Try Again.", Toast.LENGTH_SHORT).show()
                 return true
             }
@@ -100,15 +99,16 @@ class GameView(private val numOfCols: Int,
                 // TODO: Call drawLine() on the StudentLine objects.
                 if (minOf(yDelta, xDelta) == xDelta) {
                     if (aboveDot)
-                        dotsBoxGame.StudentLine(xDotAxis, (yDotAxis * 2) - 1)
+                        dotsBoxGame.StudentLine(xDotAxis, (yDotAxis * 2) - 1).drawLine()
+
                      else
-                        dotsBoxGame.StudentLine(xDotAxis, (yDotAxis * 2) + 1)
+                        dotsBoxGame.StudentLine(xDotAxis, (yDotAxis * 2) + 1).drawLine()
                 }
                 else {
                     if (rightOfDot)
-                        dotsBoxGame.StudentLine(xDotAxis, yDotAxis * 2)
+                        dotsBoxGame.StudentLine(xDotAxis, yDotAxis * 2).drawLine()
                     else
-                        dotsBoxGame.StudentLine(xDotAxis - 1, yDotAxis * 2)
+                        dotsBoxGame.StudentLine(xDotAxis - 1, yDotAxis * 2).drawLine()
                 }
                 return true
             }

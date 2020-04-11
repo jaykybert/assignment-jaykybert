@@ -21,7 +21,8 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
     override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
 
     // TODO("Create a matrix initialized with your own line type")
-    override val lines: SparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns, rows, ::StudentLine)
+    override var lines: SparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns, rows, ::StudentLine)
+
 
     override val isFinished: Boolean
         get() = TODO("Provide this getter. Note you can make it a var to do so")
@@ -51,6 +52,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
 
         //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
         override fun drawLine() {
+            println(lines)
             // NOTE read the documentation in the interface, you must also update the current player.
             fireGameChange()
         }

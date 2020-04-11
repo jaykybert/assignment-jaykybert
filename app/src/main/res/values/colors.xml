@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#C6A8C0</color>      <!-- #008577 -->
-    <color name="colorPrimaryDark">#DACBCB</color>  <!-- #00574B -->
+    <color name="colorPrimaryDark">#494949</color>  <!-- #00574B -->
     <color name="colorAccent">#C6A8C0</color>       <!-- #D81B60 -->
     <color name="backgroundColor">#DACBCB</color>
     <color name="dotColor">#494949</color>
