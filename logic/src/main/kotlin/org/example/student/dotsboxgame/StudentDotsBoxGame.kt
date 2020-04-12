@@ -1,27 +1,32 @@
 package org.example.student.dotsboxgame
 
 import uk.ac.bournemouth.ap.dotsandboxeslib.*
-import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.Matrix
-import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.MutableMatrix
-import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.MutableSparseMatrix
-import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.SparseMatrix
+import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.*
 import kotlin.random.Random
 
 
-class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : AbstractDotsAndBoxesGame() {
+class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : AbstractDotsAndBoxesGame() {
 
     // TODO("You will need to get players from your constructor")
-    override val players: List<Player> = players
+    override val players: List<Player> = playerList.toMutableList()
 
-    override val currentPlayer: Player get()= TODO("Determine the current player, like keeping" +
-                                                           "the index into the players list")
+
+    //TODO("Determine the current player, like keeping the index into the players list")
+    // Unsure about this.
+    private var currentPlayerIdx: Int = 0
+    override val currentPlayer: Player get() {
+        if(currentPlayerIdx == players.size) currentPlayerIdx = 0
+        return players[currentPlayerIdx]
+    }
+
+
 
     // NOTE: you may want to me more specific in the box type if you use that type in your class
     // TODO("Create a matrix initialized with your own box type")
     override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
 
     // TODO("Create a matrix initialized with your own line type")
-    override var lines: SparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns, rows, ::StudentLine)
+    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns, rows, ::StudentLine)
 
 
     override val isFinished: Boolean
@@ -41,9 +46,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
      * it being an inner class.
      */
     inner class StudentLine(lineX: Int, lineY: Int) : AbstractLine(lineX, lineY) {
-        override val isDrawn: Boolean
-            get() = TODO("Provide this getter. Note you can make it a var to do so")
-
+        override var isDrawn: Boolean = false
 
         override val adjacentBoxes: Pair<StudentBox?, StudentBox?>
             get() {
@@ -52,23 +55,40 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
 
         //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
         override fun drawLine() {
-            println(lines)
-            // NOTE read the documentation in the interface, you must also update the current player.
+            // Consider re-writing this - quite messy.
+            if (!isDrawn) {
+                lines[lineX, lineY] = this
+                isDrawn = true
+                // Check here if it forms a box. If not, increment player count.
+                currentPlayerIdx++
+            }
+            else {
+                throw LineAlreadyDrawn(lineX, lineY)
+            }
             fireGameChange()
+            // fireGameOver(params)
         }
     }
 
     inner class StudentBox(boxX: Int, boxY: Int) : AbstractBox(boxX, boxY) {
 
+        //TODO("Provide this getter. Note you can make it a var to do so")
         override val owningPlayer: Player?
-            get() = TODO("Provide this getter. Note you can make it a var to do so")
+            get() = boxes[boxX, boxY].owningPlayer // Unsure
 
         /**
          * This must be lazy or a getter, otherwise there is a chicken/egg problem with the boxes
          */
         override val boundingLines: Iterable<DotsAndBoxesGame.Line>
             get() = TODO("Look up the correct lines from the game outer class")
-
     }
 }
 
+
+class LineAlreadyDrawn(private val lineX: Int, private val lineY: Int): Exception() {
+
+
+    override fun toString(): String {
+        return "The line at coordinates ($lineX,$lineY) has already been drawn."
+    }
+}
