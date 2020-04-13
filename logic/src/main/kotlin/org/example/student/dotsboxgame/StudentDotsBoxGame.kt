@@ -2,7 +2,7 @@ package org.example.student.dotsboxgame
 
 import uk.ac.bournemouth.ap.dotsandboxeslib.*
 import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.*
-import kotlin.random.Random
+import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.ext.Coordinate
 
 
 class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : AbstractDotsAndBoxesGame() {
@@ -63,7 +63,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                 currentPlayerIdx++
             }
             else {
-                throw LineAlreadyDrawn(lineX, lineY)
+                throw LineAlreadyDrawnException(lineX, lineY)
             }
             fireGameChange()
             // fireGameOver(params)
@@ -81,11 +81,12 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
          */
         override val boundingLines: Iterable<DotsAndBoxesGame.Line>
             get() = TODO("Look up the correct lines from the game outer class")
+
     }
 }
 
 
-class LineAlreadyDrawn(private val lineX: Int, private val lineY: Int): Exception() {
+class LineAlreadyDrawnException(private val lineX: Int, private val lineY: Int): Exception() {
 
 
     override fun toString(): String {
