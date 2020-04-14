@@ -2,16 +2,16 @@ package org.example.student.dotsboxgame
 
 import uk.ac.bournemouth.ap.dotsandboxeslib.*
 import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.*
-import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.ext.Coordinate
 
 
+// Columns and rows parameters represent boxes, not lines nor dots.
 class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : AbstractDotsAndBoxesGame() {
 
     // TODO("You will need to get players from your constructor")
     override val players: List<Player> = playerList.toMutableList()
 
 
-    //TODO("Determine the current player, like keeping the index into the players list")
+    //TODO("Determine the current player, like keeping the index into the players list").
     // Unsure about this.
     private var currentPlayerIdx: Int = 0
     override val currentPlayer: Player get() {
@@ -20,17 +20,30 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
     }
 
 
-
     // NOTE: you may want to me more specific in the box type if you use that type in your class
     // TODO("Create a matrix initialized with your own box type")
     override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
 
     // TODO("Create a matrix initialized with your own line type")
-    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns, rows, ::StudentLine)
+    // Column+1 since the total number of column indexes is one greater than the number of boxes.
+    //  - this is due to vertical lines, horizontal lines are equal to the number of boxes - hence array validation being needed.
+
+    // (Row*2)+1 since every time there is a change from horizontal to vertical we consider it a new row.
+    // - therefore one box has 3 rows (top horizontal line, middle vertical line, bottom horizontal line).
+    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine)
 
 
+    //TODO("Provide this getter. Note you can make it a var to do so")
     override val isFinished: Boolean
-        get() = TODO("Provide this getter. Note you can make it a var to do so")
+        get() {
+            // The game is finished when all lines have been drawn.
+            for(line in lines) {
+                if(!line.isDrawn) return false
+            }
+            return true
+            // Maybe also reset the matrices? Redraw the UI?
+        }
+
 
     override fun playComputerTurns() {
         var current = currentPlayer
@@ -55,11 +68,10 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
         //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
         override fun drawLine() {
-            // Consider re-writing this - quite messy.
             if (!isDrawn) {
                 lines[lineX, lineY] = this
                 isDrawn = true
-                // Check here if it forms a box. If not, increment player count.
+                // TODO - Check here if it forms a box. If not, increment player count.
                 currentPlayerIdx++
             }
             else {
@@ -74,7 +86,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
         //TODO("Provide this getter. Note you can make it a var to do so")
         override val owningPlayer: Player?
-            get() = boxes[boxX, boxY].owningPlayer // Unsure
+            get() = boxes[boxX, boxY].owningPlayer
 
         /**
          * This must be lazy or a getter, otherwise there is a chicken/egg problem with the boxes
@@ -82,14 +94,5 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         override val boundingLines: Iterable<DotsAndBoxesGame.Line>
             get() = TODO("Look up the correct lines from the game outer class")
 
-    }
-}
-
-
-class LineAlreadyDrawnException(private val lineX: Int, private val lineY: Int): Exception() {
-
-
-    override fun toString(): String {
-        return "The line at coordinates ($lineX,$lineY) has already been drawn."
     }
 }
