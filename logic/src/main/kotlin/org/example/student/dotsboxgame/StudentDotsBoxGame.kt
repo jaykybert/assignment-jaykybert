@@ -27,12 +27,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
     override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
 
     // TODO("Create a matrix initialized with your own line type")
-    // Column+1 since the total number of column indexes is one greater than the number of boxes.
-    //  - this is due to vertical lines, horizontal lines are equal to the number of boxes - hence array validation being needed.
-
-    // (Row*2)+1 since every time there is a change from horizontal to vertical we consider it a new row.
-    // - therefore one box has 3 rows (top horizontal line, middle vertical line, bottom horizontal line).
-    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2), ::StudentLine)
+    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine) { x, y -> y % 2 != 0 || x < columns }
 
 
     //TODO("Provide this getter. Note you can make it a var to do so")
@@ -64,38 +59,35 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
         override var isDrawn: Boolean = false
 
+        // TODO("You need to look up the correct boxes for this to work")
         override val adjacentBoxes: Pair<StudentBox?, StudentBox?>
             get() {
-
-                // horizontal or vertical - this affects equation.
-                if(lineY % 2 == 0) { // A horizontal line - above/below.
-                    val aboveBoxY: Int = lineY - (lineY / 2) + 1 // y coord of box above.
-                    val belowBoxY: Int = aboveBoxY + 1
+                if(lineY % 2 == 0) { // Horizontal Lines
+                    val x: Int = lineX
+                    val y: Int = lineY / 2 // The y coord of the box below, -1 for box above.
 
                     // Edge Cases
                     if(lineY == 0) { // Top row - no box above.
-                        return Pair<StudentBox?, StudentBox?>(null, boxes[lineX, belowBoxY] as StudentBox)
+                        return Pair<StudentBox?, StudentBox?>(null, boxes[x, y] as StudentBox)
                     }
                     else if(lineY == numOfRows * 2) { // Bottom row - no box below.
-                        return Pair<StudentBox?, StudentBox?>(boxes[lineX, aboveBoxY] as StudentBox, null)
+                        return Pair<StudentBox?, StudentBox?>(boxes[x, y-1] as StudentBox, null)
                     }
-                    return Pair<StudentBox?, StudentBox?>(boxes[lineX, aboveBoxY] as StudentBox, boxes[lineX, belowBoxY] as StudentBox)
-
+                    return Pair<StudentBox?, StudentBox?>(boxes[x, y-1] as StudentBox, boxes[x, y] as StudentBox)
                 }
-                else { // A vertical line - left/right
-                    val boxRow: Int = lineY -  ((lineY + 1) / 2)
+                else { // Vertical Lines
+                    val x: Int = lineX
+                    val y: Int = (lineY - 1) / 2
 
                     // Edge Cases
-                    if(lineX == 0) { // Far left column - no box on left.
-                        return Pair<StudentBox?, StudentBox?>(null, boxes[lineX, boxRow] as StudentBox)
+                    if(lineX == 0) { // Left column - no box on left.
+                        return Pair<StudentBox?, StudentBox?>(null, boxes[x, y] as StudentBox)
                     }
-                    else if(lineX == numOfCols) { // Far right column - no box on right.
-                        return Pair<StudentBox?, StudentBox?>(boxes[lineX-1, boxRow] as StudentBox, null)
+                    else if(lineX == numOfCols) { // Right column - no box on right.
+                        return Pair<StudentBox?, StudentBox?>(boxes[x-1, y] as StudentBox, null)
                     }
-                    return Pair<StudentBox?, StudentBox?>(boxes[lineX-1, boxRow] as StudentBox, boxes[lineX, boxRow] as StudentBox)
+                    return Pair<StudentBox?, StudentBox?>(boxes[x-1, y] as StudentBox, boxes[x, y] as StudentBox)
                 }
-
-                TODO("You need to look up the correct boxes for this to work")
             }
 
         //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
@@ -117,8 +109,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
     inner class StudentBox(boxX: Int, boxY: Int) : AbstractBox(boxX, boxY) {
 
         //TODO("Provide this getter. Note you can make it a var to do so")
-        override val owningPlayer: Player?
-            get() = boxes[boxX, boxY].owningPlayer
+        override var owningPlayer: Player? = null
 
         /**
          * This must be lazy or a getter, otherwise there is a chicken/egg problem with the boxes
