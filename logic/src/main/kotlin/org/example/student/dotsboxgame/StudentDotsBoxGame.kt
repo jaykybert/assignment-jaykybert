@@ -114,7 +114,8 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         /**
          * This must be lazy or a getter, otherwise there is a chicken/egg problem with the boxes
          */
-        override val boundingLines: Iterable<DotsAndBoxesGame.Line>
-            get() = TODO("Look up the correct lines from the game outer class")
+        // TODO("Look up the correct lines from the game outer class")
+        override val boundingLines: Iterable<DotsAndBoxesGame.Line> // Order: Above, Below, Left, Right
+            get() = listOf(lines[boxX, boxY*2], lines[boxX, (boxY*2)+2], lines[boxX, (boxY*2)+1], lines[boxX+1, (boxY*2)+1])
     }
 }
