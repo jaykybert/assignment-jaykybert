@@ -26,18 +26,13 @@ abstract class AbstractDotsAndBoxesGame: DotsAndBoxesGame {
     }
 
     override fun removeOnGameOverListener(listener: DotsAndBoxesGame.GameOverListener) {
-        try {
-            onGameOverListeners.remove(listener)
-        }
-        catch(e: java.util.NoSuchElementException) { }
+        onGameOverListeners.remove(listener)
     }
 
 
     override fun removeOnGameChangeListener(listener: DotsAndBoxesGame.GameChangeListener) {
-        try {
-            onGameChangeListeners.remove(listener)
-        }
-        catch(e: java.util.NoSuchElementException) { }
+        onGameChangeListeners.remove(listener)
+
     }
 
     /** Helper function that informs all listeners of the game over event. */

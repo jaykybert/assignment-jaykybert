@@ -8,19 +8,26 @@ import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.*
 class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : AbstractDotsAndBoxesGame() {
 
     // TODO("You will need to get players from your constructor")
-    override val players: List<Player> = playerList.toMutableList()
+    override val players: List<Player> = playerList.toList()
     val numOfRows: Int = rows
     val numOfCols: Int = columns
 
 
     //TODO("Determine the current player, like keeping the index into the players list").
     // Unsure about this.
-    private var currentPlayerIdx: Int = 0
+
     override val currentPlayer: Player get() {
-        if(currentPlayerIdx == players.size) currentPlayerIdx = 0
         return players[currentPlayerIdx]
     }
 
+    private var currentPlayerIdx: Int = 0
+    fun changePlayer() {
+        if(currentPlayerIdx == players.size) currentPlayerIdx = 0
+        else {
+            currentPlayerIdx++
+        }
+
+    }
 
     // NOTE: you may want to me more specific in the box type if you use that type in your class
     // TODO("Create a matrix initialized with your own box type")
@@ -44,7 +51,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
     override fun playComputerTurns() {
         var current = currentPlayer
-        while (current is ComputerPlayer && ! isFinished) {
+        while (current is Computer && ! isFinished) { // Changed from ComputerPlayer to Computer.
             current.makeMove(this)
             current = currentPlayer
         }
@@ -64,7 +71,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             get() {
                 if(lineY % 2 == 0) { // Horizontal Lines
                     val x: Int = lineX
-                    val y: Int = lineY / 2 // The y coord of the box below, -1 for box above.
+                    val y: Int = lineY / 2 // The y-coord of the box below, -1 for box above.
 
                     // Edge Cases
                     if(lineY == 0) { // Top row - no box above.
@@ -96,7 +103,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                 lines[lineX, lineY] = this
                 isDrawn = true
                 // TODO - Check here if it forms a box. If not, increment player count.
-                currentPlayerIdx++
+                changePlayer()
             }
             else {
                 throw LineAlreadyDrawnException(lineX, lineY)
