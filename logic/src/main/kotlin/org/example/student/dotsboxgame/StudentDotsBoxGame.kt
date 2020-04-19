@@ -21,12 +21,16 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
     }
 
     private var currentPlayerIdx: Int = 0
-    fun changePlayer() {
-        if(currentPlayerIdx == players.size) currentPlayerIdx = 0
+    private fun changePlayer() {
+        if(currentPlayerIdx == players.size-1) {
+            currentPlayerIdx = 0
+        }
         else {
             currentPlayerIdx++
         }
-
+        if(players[currentPlayerIdx] is ComputerPlayer) {
+            playComputerTurns()
+        }
     }
 
     // NOTE: you may want to me more specific in the box type if you use that type in your class
@@ -51,7 +55,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
     override fun playComputerTurns() {
         var current = currentPlayer
-        while (current is Computer && ! isFinished) { // Changed from ComputerPlayer to Computer.
+        while (current is ComputerPlayer && !isFinished) { // Changed from ComputerPlayer to Computer.
             current.makeMove(this)
             current = currentPlayer
         }
@@ -102,14 +106,47 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             if (!isDrawn) {
                 lines[lineX, lineY] = this
                 isDrawn = true
-                // TODO - Check here if it forms a box. If not, increment player count.
-                changePlayer()
+                val box1: StudentBox? = this.adjacentBoxes.first
+                val box2: StudentBox? = this.adjacentBoxes.second
+                var boxMade: Boolean = false
+                if(box1 != null) {
+                    if(box1.boundingLines.all { it.isDrawn }) {
+                        // Set owning player.
+                        for(box in boxes) {
+                            if(box1.boxX == box.boxX && box1.boxY == box.boxY) {
+                                box.owningPlayer = currentPlayer
+                                boxMade = true
+                            }
+                        }
+                    }
+                }
+                if(box2 != null) {
+                    if(box2.boundingLines.all { it.isDrawn }) {
+                        for(box in boxes) {
+                            if(box2.boxX == box.boxX && box2.boxY == box.boxY) {
+                                box.owningPlayer = currentPlayer
+                                boxMade = true
+                            }
+                        }
+                    }
+                }
+                if(!boxMade) { // Change player if no box was completed.
+                    changePlayer()
+                }
+                fireGameChange()
             }
             else {
                 throw LineAlreadyDrawnException(lineX, lineY)
             }
-            fireGameChange()
-            // fireGameOver(params)
+
+            if(isFinished) {
+                val scoreList: MutableList<Pair<Player, Int>> = mutableListOf()
+                for(player in players.indices) {
+                    val pair: Pair<Player, Int> = Pair(players[player], getScores()[player])
+                    scoreList.add(pair)
+                }
+                fireGameOver(scoreList)
+            }
         }
     }
 
@@ -126,3 +163,4 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             get() = listOf(lines[boxX, boxY*2], lines[boxX, (boxY*2)+2], lines[boxX, (boxY*2)+1], lines[boxX+1, (boxY*2)+1])
     }
 }
+

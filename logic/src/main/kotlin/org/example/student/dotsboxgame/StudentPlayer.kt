@@ -28,33 +28,6 @@ class Computer: ComputerPlayer() {
         for(line in game.lines) {
             if(!line.isDrawn)
                 line.drawLine()
-                // Check if boxes are created.
-                val box1: StudentDotsBoxGame.StudentBox = line.adjacentBoxes.first as StudentDotsBoxGame.StudentBox
-                val box2: StudentDotsBoxGame.StudentBox = line.adjacentBoxes.second as StudentDotsBoxGame.StudentBox
-                val boxMade: Boolean = false
-
-                if(box1.boundingLines.all { it.isDrawn }) {
-                    // Set owning player in the boxes matrix.
-                    for(box in game.boxes) {
-                        if(box1.boxX == box.boxX || box1.boxY == box.boxY) {
-                            box.owningPlayer = game.currentPlayer
-                            // Change player.
-                        }
-                    }
-
-
-                }
-                if(box2.boundingLines.all { it.isDrawn }) {
-                    // Set owning player in the boxes matrix.
-                }
-
-
-
-
-
         }
-
-
-
     }
 }

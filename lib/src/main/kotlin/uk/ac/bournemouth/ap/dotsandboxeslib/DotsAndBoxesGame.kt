@@ -139,7 +139,7 @@ interface DotsAndBoxesGame {
          * The current player that owns this particular box. As the game processes, the box for the same
          * coordinates may likely have an updated player.
          */
-        val owningPlayer: Player?
+        var owningPlayer: Player?
 
         /**
          * A collection of the lines that surround the box.
