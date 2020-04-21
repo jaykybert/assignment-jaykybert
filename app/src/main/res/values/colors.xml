@@ -5,4 +5,6 @@
     <color name="colorAccent">#C6A8C0</color>       <!-- #D81B60 -->
     <color name="backgroundColor">#DACBCB</color>
     <color name="dotColor">#494949</color>
+    <color name="undrawnLineColor">#FFFFFF</color>
+    <color name="drawnLineColor">#494949</color>
 </resources>

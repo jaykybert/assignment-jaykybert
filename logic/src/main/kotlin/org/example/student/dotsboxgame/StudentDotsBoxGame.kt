@@ -2,6 +2,7 @@ package org.example.student.dotsboxgame
 
 import uk.ac.bournemouth.ap.dotsandboxeslib.*
 import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.*
+import java.lang.IndexOutOfBoundsException
 
 
 // Columns and rows parameters represent boxes, not lines nor dots.
@@ -16,9 +17,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
     //TODO("Determine the current player, like keeping the index into the players list").
     // Unsure about this.
 
-    override val currentPlayer: Player get() {
-        return players[currentPlayerIdx]
-    }
+    override val currentPlayer: Player get() = players[currentPlayerIdx]
 
     private var currentPlayerIdx: Int = 0
     private fun changePlayer() {
@@ -33,12 +32,14 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         }
     }
 
+
     // NOTE: you may want to me more specific in the box type if you use that type in your class
     // TODO("Create a matrix initialized with your own box type")
     override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
 
     // TODO("Create a matrix initialized with your own line type")
     override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine) { x, y -> y % 2 != 0 || x < columns }
+
 
 
     //TODO("Provide this getter. Note you can make it a var to do so")
@@ -55,7 +56,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
     override fun playComputerTurns() {
         var current = currentPlayer
-        while (current is ComputerPlayer && !isFinished) { // Changed from ComputerPlayer to Computer.
+        while (current is ComputerPlayer && !isFinished) {
             current.makeMove(this)
             current = currentPlayer
         }
@@ -103,17 +104,23 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
         //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
         override fun drawLine() {
-            if (!isDrawn) {
+            if (lines[lineX, lineY].isDrawn) {
+                throw LineAlreadyDrawnException(lineX, lineY)
+            }
+            else {
+                if(!lines.isValid(lineX, lineY)) {
+                        throw IndexOutOfBoundsException()
+                    }
                 lines[lineX, lineY] = this
                 isDrawn = true
                 val box1: StudentBox? = this.adjacentBoxes.first
                 val box2: StudentBox? = this.adjacentBoxes.second
-                var boxMade: Boolean = false
+                var boxMade = false
                 if(box1 != null) {
                     if(box1.boundingLines.all { it.isDrawn }) {
                         // Set owning player.
                         for(box in boxes) {
-                            if(box1.boxX == box.boxX && box1.boxY == box.boxY) {
+                            if(box1 == box) {
                                 box.owningPlayer = currentPlayer
                                 boxMade = true
                             }
@@ -123,21 +130,19 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                 if(box2 != null) {
                     if(box2.boundingLines.all { it.isDrawn }) {
                         for(box in boxes) {
-                            if(box2.boxX == box.boxX && box2.boxY == box.boxY) {
+                            if(box2 == box) {
                                 box.owningPlayer = currentPlayer
                                 boxMade = true
                             }
                         }
                     }
                 }
-                if(!boxMade) { // Change player if no box was completed.
+                if(!boxMade) { // Change player if no box was made.
                     changePlayer()
                 }
                 fireGameChange()
             }
-            else {
-                throw LineAlreadyDrawnException(lineX, lineY)
-            }
+
 
             if(isFinished) {
                 val scoreList: MutableList<Pair<Player, Int>> = mutableListOf()
