@@ -7,7 +7,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
-import org.example.student.dotsboxgame.Computer
+import org.example.student.dotsboxgame.Human
 import org.example.student.dotsboxgame.LineAlreadyDrawnException
 import org.example.student.dotsboxgame.StudentDotsBoxGame
 import uk.ac.bournemouth.ap.dotsandboxeslib.*
@@ -20,24 +20,47 @@ class GameView(private val numOfCols: Int,
                context: Context?): View(context) {
 
     // Paints
-    private var bgPaint: Paint = Paint().apply {
+    private val bgPaint: Paint = Paint().apply {
         style = Paint.Style.FILL
         color = resources.getColor(R.color.backgroundColor)
     }
-    private var dotPaint: Paint = Paint().apply {
+    private val dotPaint: Paint = Paint().apply {
         style = Paint.Style.FILL
         color = resources.getColor(R.color.dotColor)
     }
 
-    private var undrawnLinePaint: Paint = Paint().apply {
+    private val undrawnLinePaint: Paint = Paint().apply {
         style = Paint.Style.FILL
         color = resources.getColor(R.color.undrawnLineColor)
     }
 
-    private var drawnLinePaint: Paint = Paint().apply {
+    private val drawnLinePaint: Paint = Paint().apply {
         style = Paint.Style.FILL
         color = resources.getColor(R.color.drawnLineColor)
     }
+
+    val playerPaints: List<Paint> = listOf(
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = resources.getColor(R.color.player1Color) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = resources.getColor(R.color.player2Color) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = resources.getColor(R.color.player3Color) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = resources.getColor(R.color.player4Color) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = resources.getColor(R.color.player5Color) })
+
+
+    // Dot Spacing Information - Given values in onDraw(), used in onSingleTapUp().
+    var xSpacing: Float = 0F
+    var ySpacing: Float = 0F
+    var spacing: Float = 0F
 
 
     // Listeners
@@ -55,14 +78,21 @@ class GameView(private val numOfCols: Int,
         }
     }
 
+
     // Game Instance
-    private var dotsBoxGame: StudentDotsBoxGame =
-        StudentDotsBoxGame(numOfCols, numOfRows, listOf(HumanPlayer(), Computer()))
+    private var dotsBoxGame: StudentDotsBoxGame
+
 
     init {
+        val players: List<Player> = listOf(Human("Jay"), Human("Player 2"))
+        for(player in players.indices) {
+            players[player].paintRGB = playerPaints[player].color
+        }
+        dotsBoxGame = StudentDotsBoxGame(numOfCols, numOfRows, players)
         dotsBoxGame.addOnGameChangeListener(gameChangeListener)
         dotsBoxGame.addOnGameOverListener(gameOverListener)
     }
+
 
     // Gesture Detection
     private val detectInput = GestureDetector(context, GestureListener())
@@ -78,11 +108,11 @@ class GameView(private val numOfCols: Int,
         }
 
         override fun onSingleTapUp(event: MotionEvent): Boolean {
-            val xSpacing: Float = width.toFloat() / (numOfCols + 1).toFloat()
-            val ySpacing: Float = height.toFloat() / (numOfRows + 1).toFloat()
-            val spacing: Float = if (xSpacing < ySpacing) xSpacing else ySpacing
-            val xPos: Int = event.x.toInt()
-            val yPos: Int = event.y.toInt()
+            if(dotsBoxGame.currentPlayer is ComputerPlayer) {
+                return true
+            }
+            val xPos: Float = event.x
+            val yPos: Float = event.y
 
             val columnFloat: Float = (xPos / spacing)
             val rowFloat: Float = (yPos / spacing)
@@ -90,12 +120,13 @@ class GameView(private val numOfCols: Int,
             val xDot: Float = floor(columnFloat) * spacing + (spacing / 2)
             val yDot: Float = floor(rowFloat) * spacing + (spacing / 2)
 
-            val aboveDot: Boolean = rowFloat.roundToInt() < rowFloat
-            val rightOfDot: Boolean = columnFloat.roundToInt() > columnFloat
+            // Used to determine what line to draw relative to the nearest dot.
+            val aboveDot = rowFloat.roundToInt() < rowFloat
+            val rightOfDot = columnFloat.roundToInt() > columnFloat
 
+            // Find what axis the touch was closest to, relative to the nearest dot.
             val xDelta: Float = abs(xDot - xPos)
             val yDelta: Float = abs(yDot - yPos)
-
             val xDotAxis: Int = floor(columnFloat.toDouble()).toInt()
             val yDotAxis: Int = floor(rowFloat.toDouble()).toInt()
 
@@ -130,39 +161,58 @@ class GameView(private val numOfCols: Int,
     }
 
 
-    // User Interface
+    // Game Interface
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         val dotSize = 10.0F
+        xSpacing = width.toFloat() / (numOfCols+1).toFloat()
+        ySpacing = height.toFloat() / (numOfRows+1).toFloat()
+        spacing = if(xSpacing < ySpacing) xSpacing else ySpacing
 
-        val xSpacing: Float = width.toFloat() / (numOfCols+1).toFloat()
-        val ySpacing: Float = height.toFloat() / (numOfRows+1).toFloat()
-        val spacing: Float = if(xSpacing < ySpacing) xSpacing
-        else ySpacing
-        canvas.drawRect(0.toFloat(), 0.toFloat(), width.toFloat(), height.toFloat(), bgPaint)
+        canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), bgPaint)
 
-        // Until is exclusive, so + 1 for number of dots.
-        for(column in 0 until numOfCols + 1) {
-            for(row in 0 until numOfRows + 1) {
-                val xCoord = spacing * column + (spacing / 2)
-                val yCoord = spacing * row + (spacing / 2)
-                canvas.drawCircle(xCoord, yCoord, dotSize, dotPaint)
+        for(column in 0..numOfCols) {
+            for(row in 0..numOfRows) {
+                val x = spacing * column + (spacing / 2)
+                val y = spacing * row + (spacing / 2)
 
-                if(column != numOfCols) {
+                canvas.drawCircle(x, y, dotSize, dotPaint) // Draw the dot.
+
+                if(column != numOfCols) { // Draw lines to dot on the right (excluding dots on the final column).
                     if(dotsBoxGame.lines[column, row*2].isDrawn) {
-                        canvas.drawLine(xCoord+dotSize, yCoord, (xCoord+dotSize+spacing), yCoord, drawnLinePaint)
+                        canvas.drawLine(x+dotSize, y, (x+dotSize+spacing), y, drawnLinePaint)
                     }
                     else {
-                        canvas.drawLine(xCoord+dotSize, yCoord, (xCoord+dotSize+spacing), yCoord, undrawnLinePaint)
+                        canvas.drawLine(x+dotSize, y, (x+dotSize+spacing), y, undrawnLinePaint)
+                    }
+                    // Draw the square between dots. Don't draw it right of the final column, or beneath the final row.
+                    if(row != numOfRows) {
+                        // Get the box owner.
+                        // color = owner.paintRGB
+                        // if owner is null, color is background color.
+                        val boxOwner = dotsBoxGame.boxes[column, row].owningPlayer
+                        var paint: Paint
+                        if(boxOwner == null) {
+                             paint = Paint().apply {
+                                style = Paint.Style.FILL
+                                color = resources.getColor(R.color.unownedBoxColor)
+                            }
+                        }
+                        else {
+                             paint = Paint().apply {
+                                style = Paint.Style.FILL
+                                color = boxOwner.paintRGB
+                            }
+                        }
+                        canvas.drawRect(x+dotSize,y+dotSize, x+spacing-dotSize, y+spacing-dotSize, paint)
                     }
                 }
-                if(row != 0) {
+                if(row != 0) { // Draw lines to the dot above (excluding dots on the top row).
                     if(dotsBoxGame.lines[column, (row*2)-1].isDrawn) {
-                        canvas.drawLine(xCoord, yCoord-dotSize, xCoord, yCoord+dotSize-spacing, drawnLinePaint)
+                        canvas.drawLine(x, y-dotSize, x, y+dotSize-spacing, drawnLinePaint)
                     }
                     else {
-                        canvas.drawLine(xCoord, yCoord-dotSize, xCoord, yCoord+dotSize-spacing, undrawnLinePaint)
+                        canvas.drawLine(x, y-dotSize, x, y+dotSize-spacing, undrawnLinePaint)
                     }
                 }
             }

@@ -6,13 +6,16 @@ package uk.ac.bournemouth.ap.dotsandboxeslib
  * code can be certain to check whether a player is a [ComputerPlayer] and allow its moves to be
  * triggered automatically.
  */
-sealed class Player
+sealed class Player {
+    var paintRGB: Int = 0  // Default Value. Given a value in GameView init.
+}
 
 /**
  * Base class for human players. In principle the type can be used as is, but a subclass can be
  * created to allow for attaching information such as player name.
  */
 open class HumanPlayer : Player()
+
 
 /**
  * Base class for computer players. This class adds the [makeMove] function that allows the player

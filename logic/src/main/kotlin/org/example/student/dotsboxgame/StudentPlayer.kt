@@ -10,15 +10,37 @@ class Human(private val name: String): HumanPlayer() {
 }
 
 
-class Computer: ComputerPlayer() {
+class Computer(difficulty: Int): ComputerPlayer() {
 
     override fun makeMove(game: DotsAndBoxesGame) {
-        // Go through lines matrix, find the first un-drawn line.
-        for(line in game.lines) {
-            if(!line.isDrawn) {
-                line.drawLine()
-                break
+
+        // Difficulty 1: Random Line Selection
+        fun difficultyOne() {
+            val linesShuffled = game.lines.shuffled()
+            for (line in linesShuffled) {
+                if (!line.isDrawn) {
+                    line.drawLine()
+                    break
+                }
             }
         }
+
+        // Difficulty 2: Play 3 Line Boxes, fallback to difficulty 1.
+        fun difficultyTwo() {
+            for(box in game.boxes) {
+                var lineCount = 0
+                for(line in box.boundingLines) {
+                    if(line.isDrawn) {
+                        lineCount ++
+                    }
+                    if(lineCount == 3 && !line.isDrawn) { // Check if the final line is not drawn.
+                        line.drawLine()
+                    }
+                }
+            }
+            difficultyOne()
+        }
+
+        // Difficulty 3: Avoid 2 line boxes, fallback to difficulty 2.
     }
 }

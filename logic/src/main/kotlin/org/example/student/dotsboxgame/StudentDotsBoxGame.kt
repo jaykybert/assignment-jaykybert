@@ -5,21 +5,26 @@ import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.*
 import java.lang.IndexOutOfBoundsException
 
 
-// Columns and rows parameters represent boxes, not lines nor dots.
+/** Instance of a game.
+ *  Columns and rows parameters represent boxes - not dots, nor lines.
+ */
 class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : AbstractDotsAndBoxesGame() {
 
-    // TODO("You will need to get players from your constructor")
+    // Matrices
+    override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
+    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine) { x, y -> y % 2 != 0 || x < columns }
+
+
+    // Player Tracking
     override val players: List<Player> = playerList.toList()
-    val numOfRows: Int = rows
-    val numOfCols: Int = columns
-
-
-    //TODO("Determine the current player, like keeping the index into the players list").
-    // Unsure about this.
-
-    override val currentPlayer: Player get() = players[currentPlayerIdx]
+    override val currentPlayer: Player get() = players[currentPlayerIdx] // Need error handling for 0 player games.
 
     private var currentPlayerIdx: Int = 0
+
+    /** Increments the index position which is used by the
+     *  [currentPlayer] val. Resets it to 0 at the end of [players].
+     *  Also initiates computer turns.
+     */
     private fun changePlayer() {
         if(currentPlayerIdx == players.size-1) {
             currentPlayerIdx = 0
@@ -32,28 +37,6 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         }
     }
 
-
-    // NOTE: you may want to me more specific in the box type if you use that type in your class
-    // TODO("Create a matrix initialized with your own box type")
-    override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
-
-    // TODO("Create a matrix initialized with your own line type")
-    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine) { x, y -> y % 2 != 0 || x < columns }
-
-
-
-    //TODO("Provide this getter. Note you can make it a var to do so")
-    override val isFinished: Boolean
-        get() {
-            // The game is finished when all lines have been drawn.
-            for(line in lines) {
-                if(!line.isDrawn) return false
-            }
-            return true
-            // Maybe also reset the matrices? Redraw the UI?
-        }
-
-
     override fun playComputerTurns() {
         var current = currentPlayer
         while (current is ComputerPlayer && !isFinished) {
@@ -61,6 +44,22 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             current = currentPlayer
         }
     }
+
+    // Start the game if the first player is a computer.
+    init {
+        playComputerTurns()
+    }
+
+
+    override val isFinished: Boolean
+        get() {
+            // Game is finished when all lines are drawn or all boxes are owned.
+            if(lines.any { !it.isDrawn }) {
+                return false
+            }
+            return true
+        }
+
 
     /**
      * This is an inner class as it needs to refer to the game to be able to look up the correct
@@ -71,59 +70,59 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
         override var isDrawn: Boolean = false
 
-        // TODO("You need to look up the correct boxes for this to work")
         override val adjacentBoxes: Pair<StudentBox?, StudentBox?>
             get() {
-                if(lineY % 2 == 0) { // Horizontal Lines
+                if(lineY % 2 == 0) { // Horizontal Lines - Adjacent boxes are above/below.
                     val x: Int = lineX
-                    val y: Int = lineY / 2 // The y-coord of the box below, -1 for box above.
+                    val y: Int = lineY / 2 // This is the y of the box below, -1 for box above.
 
                     // Edge Cases
-                    if(lineY == 0) { // Top row - no box above.
+                    if(lineY == 0) { // First Row - No box above.
                         return Pair<StudentBox?, StudentBox?>(null, boxes[x, y] as StudentBox)
                     }
-                    else if(lineY == numOfRows * 2) { // Bottom row - no box below.
+                    else if(lineY == lines.maxHeight-1) { // Bottom Row - No box below.
                         return Pair<StudentBox?, StudentBox?>(boxes[x, y-1] as StudentBox, null)
                     }
                     return Pair<StudentBox?, StudentBox?>(boxes[x, y-1] as StudentBox, boxes[x, y] as StudentBox)
                 }
-                else { // Vertical Lines
+                else { // Vertical Lines - Adjacent boxes are left/right.
                     val x: Int = lineX
                     val y: Int = (lineY - 1) / 2
 
                     // Edge Cases
-                    if(lineX == 0) { // Left column - no box on left.
+                    if(lineX == 0) { // Left-most Column - No box on left.
                         return Pair<StudentBox?, StudentBox?>(null, boxes[x, y] as StudentBox)
                     }
-                    else if(lineX == numOfCols) { // Right column - no box on right.
+                    else if(lineX == lines.maxWidth-1) { // Right-most Column - No box on right.
                         return Pair<StudentBox?, StudentBox?>(boxes[x-1, y] as StudentBox, null)
                     }
                     return Pair<StudentBox?, StudentBox?>(boxes[x-1, y] as StudentBox, boxes[x, y] as StudentBox)
                 }
             }
 
-        //TODO("Implement the logic for a player drawing a line. Don't forget to inform the listeners (fireGameChange, fireGameOver)")
+
         override fun drawLine() {
             if (lines[lineX, lineY].isDrawn) {
                 throw LineAlreadyDrawnException(lineX, lineY)
             }
             else {
                 if(!lines.isValid(lineX, lineY)) {
-                        throw IndexOutOfBoundsException()
-                    }
+                    throw IndexOutOfBoundsException()
+                }
                 lines[lineX, lineY] = this
                 isDrawn = true
+                // See if the line completes the adjacent boxes.
                 val box1: StudentBox? = this.adjacentBoxes.first
                 val box2: StudentBox? = this.adjacentBoxes.second
                 var boxMade = false
                 if(box1 != null) {
                     if(box1.boundingLines.all { it.isDrawn }) {
-                        // Set owning player.
-                        for(box in boxes) {
-                            if(box1 == box) {
-                                box.owningPlayer = currentPlayer
-                                boxMade = true
-                            }
+                                // Set owning player.
+                                for(box in boxes) {
+                                    if(box1 == box) {
+                                        box.owningPlayer = currentPlayer
+                                        boxMade = true
+                                    }
                         }
                     }
                 }
@@ -137,18 +136,16 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                         }
                     }
                 }
-                if(!boxMade) { // Change player if no box was made.
+                fireGameChange()
+                if(!boxMade) { // Change the player if no box was made.
                     changePlayer()
                 }
-                fireGameChange()
             }
-
-
+            // Check finish condition, retrieve final scores.
             if(isFinished) {
                 val scoreList: MutableList<Pair<Player, Int>> = mutableListOf()
                 for(player in players.indices) {
-                    val pair: Pair<Player, Int> = Pair(players[player], getScores()[player])
-                    scoreList.add(pair)
+                    scoreList.add(Pair(players[player], getScores()[player]))
                 }
                 fireGameOver(scoreList)
             }
@@ -157,15 +154,15 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
     inner class StudentBox(boxX: Int, boxY: Int) : AbstractBox(boxX, boxY) {
 
-        //TODO("Provide this getter. Note you can make it a var to do so")
         override var owningPlayer: Player? = null
 
         /**
          * This must be lazy or a getter, otherwise there is a chicken/egg problem with the boxes
          */
-        // TODO("Look up the correct lines from the game outer class")
-        override val boundingLines: Iterable<DotsAndBoxesGame.Line> // Order: Above, Below, Left, Right
-            get() = listOf(lines[boxX, boxY*2], lines[boxX, (boxY*2)+2], lines[boxX, (boxY*2)+1], lines[boxX+1, (boxY*2)+1])
+        override val boundingLines: Iterable<DotsAndBoxesGame.Line> // Line Order: Above, Below, Left, Right
+            get() = listOf(lines[boxX, boxY*2],
+                           lines[boxX, (boxY*2)+2],
+                           lines[boxX, (boxY*2)+1],
+                           lines[boxX+1, (boxY*2)+1])
     }
 }
-
