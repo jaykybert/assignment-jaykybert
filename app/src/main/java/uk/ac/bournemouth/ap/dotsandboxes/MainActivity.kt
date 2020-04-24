@@ -1,5 +1,6 @@
 package uk.ac.bournemouth.ap.dotsandboxes
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
@@ -11,6 +12,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val gameView = GameView(3, 3, this)
-        setContentView(gameView)
+        val intent = Intent(this, StartGameActivity::class.java)
+
+        startActivity(intent)
+
+
     }
 }

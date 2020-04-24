@@ -18,7 +18,6 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
     // Player Tracking
     override val players: List<Player> = playerList.toList()
     override val currentPlayer: Player get() = players[currentPlayerIdx] // Need error handling for 0 player games.
-
     private var currentPlayerIdx: Int = 0
 
     /** Increments the index position which is used by the
@@ -117,11 +116,11 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                 var boxMade = false
                 if(box1 != null) {
                     if(box1.boundingLines.all { it.isDrawn }) {
-                                // Set owning player.
-                                for(box in boxes) {
-                                    if(box1 == box) {
-                                        box.owningPlayer = currentPlayer
-                                        boxMade = true
+                        // Set owning player.
+                        for(box in boxes) {
+                            if(box1 == box) {
+                                box.owningPlayer = currentPlayer
+                                boxMade = true
                                     }
                         }
                     }
@@ -137,6 +136,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                     }
                 }
                 fireGameChange()
+
                 if(!boxMade) { // Change the player if no box was made.
                     changePlayer()
                 }
@@ -152,7 +152,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         }
     }
 
-    inner class StudentBox(boxX: Int, boxY: Int) : AbstractBox(boxX, boxY) {
+     inner class StudentBox(boxX: Int, boxY: Int) : AbstractBox(boxX, boxY) {
 
         override var owningPlayer: Player? = null
 

@@ -3,6 +3,8 @@ package org.example.student.dotsboxgame
 import uk.ac.bournemouth.ap.dotsandboxeslib.ComputerPlayer
 import uk.ac.bournemouth.ap.dotsandboxeslib.DotsAndBoxesGame
 import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
+import java.util.logging.Handler
+
 
 class Human(private val name: String): HumanPlayer() {
 
@@ -10,37 +12,18 @@ class Human(private val name: String): HumanPlayer() {
 }
 
 
-class Computer(difficulty: Int): ComputerPlayer() {
+class Computer(): ComputerPlayer() {
 
+    override fun toString(): String { return "Bot" }
+
+    // TODO: Add AI
     override fun makeMove(game: DotsAndBoxesGame) {
-
-        // Difficulty 1: Random Line Selection
-        fun difficultyOne() {
-            val linesShuffled = game.lines.shuffled()
-            for (line in linesShuffled) {
-                if (!line.isDrawn) {
-                    line.drawLine()
-                    break
-                }
+        // Default Implementation - next available line.
+        for(line in game.lines) {
+            if(!line.isDrawn) {
+                line.drawLine()
+                break
             }
         }
-
-        // Difficulty 2: Play 3 Line Boxes, fallback to difficulty 1.
-        fun difficultyTwo() {
-            for(box in game.boxes) {
-                var lineCount = 0
-                for(line in box.boundingLines) {
-                    if(line.isDrawn) {
-                        lineCount ++
-                    }
-                    if(lineCount == 3 && !line.isDrawn) { // Check if the final line is not drawn.
-                        line.drawLine()
-                    }
-                }
-            }
-            difficultyOne()
-        }
-
-        // Difficulty 3: Avoid 2 line boxes, fallback to difficulty 2.
     }
 }
