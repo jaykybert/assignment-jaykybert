@@ -3,7 +3,6 @@ package org.example.student.dotsboxgame
 import uk.ac.bournemouth.ap.dotsandboxeslib.ComputerPlayer
 import uk.ac.bournemouth.ap.dotsandboxeslib.DotsAndBoxesGame
 import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
-import java.util.logging.Handler
 
 
 class Human(private val name: String): HumanPlayer() {
@@ -12,9 +11,9 @@ class Human(private val name: String): HumanPlayer() {
 }
 
 
-class Computer(): ComputerPlayer() {
+class Computer(private val name: String): ComputerPlayer() {
 
-    override fun toString(): String { return "Bot" }
+    override fun toString(): String { return name }
 
     // TODO: Add AI
     override fun makeMove(game: DotsAndBoxesGame) {

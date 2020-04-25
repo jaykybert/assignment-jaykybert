@@ -2,6 +2,7 @@ package uk.ac.bournemouth.ap.dotsandboxes
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -21,6 +22,8 @@ import kotlin.math.roundToInt
 
 class GameView(private val numOfCols: Int,
                private val numOfRows: Int,
+               private val humanPlayers: Int,
+               private val computerPlayers: Int,
                context: Context?): View(context) {
 
     // Paints
@@ -66,7 +69,22 @@ class GameView(private val numOfCols: Int,
             color = ResourcesCompat.getColor(resources, R.color.player4Color, null) },
         Paint().apply {
             style = Paint.Style.FILL
-            color = ResourcesCompat.getColor(resources, R.color.player5Color, null) })
+            color = ResourcesCompat.getColor(resources, R.color.player5Color, null) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = ResourcesCompat.getColor(resources, R.color.player6Color, null) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = ResourcesCompat.getColor(resources, R.color.player7Color, null) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = ResourcesCompat.getColor(resources, R.color.player8Color, null) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = ResourcesCompat.getColor(resources, R.color.player9Color, null) },
+        Paint().apply {
+            style = Paint.Style.FILL
+            color = ResourcesCompat.getColor(resources, R.color.player10Color, null) })
 
 
     // Dot Spacing Information - Given values in onDraw(), used in onSingleTapUp().
@@ -75,38 +93,27 @@ class GameView(private val numOfCols: Int,
     private var spacing: Float = 0F
 
 
-    // Game State Listeners
+    // Listener
     private var gameChangeListener = object: DotsAndBoxesGame.GameChangeListener {
         override fun onGameChange(game: DotsAndBoxesGame) {
             invalidate()
         }
     }
 
-    /*
-    private var gameOverListener = object: DotsAndBoxesGame.GameOverListener {
-        override fun onGameOver(game: DotsAndBoxesGame, scores: List<Pair<Player, Int>>) {
-            // Do something here once the game ends.
-
-            val intent = Intent(context, ScorePopup::class.java).apply {
-                // Params
-            }
-            Toast.makeText(context, scores[0].first.toString() + scores[0].second, Toast.LENGTH_SHORT).show()
-            invalidate()
-        }
-    }
-
-     */
-
-
-
-
     // Game Instance
     var dotsBoxGame: StudentDotsBoxGame
     init {
-        val players: List<Player> = listOf(Human("Jay"), Human("Player 2"), Computer())
+        val players: MutableList<Player> = mutableListOf()
+
+        for(human in 1..humanPlayers) {
+            players.add(Human("Player $human"))
+        }
+
+        for(bot in 1..computerPlayers) {
+            players.add(Computer("Bot $bot"))
+        }
         dotsBoxGame = StudentDotsBoxGame(numOfCols, numOfRows, players)
         dotsBoxGame.addOnGameChangeListener(gameChangeListener)
-        //dotsBoxGame.addOnGameOverListener(gameOverListener)
     }
 
 

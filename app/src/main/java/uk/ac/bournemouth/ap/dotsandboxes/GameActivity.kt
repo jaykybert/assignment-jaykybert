@@ -11,14 +11,19 @@ const val PLAYERS = "uk.ac.bournemouth.ap.dotsandboxes.PLAYERS"
 const val SCORES = "uk.ac.bournemouth.ap.dotsandboxes.SCORES"
 
 
-class StartGameActivity: AppCompatActivity() {
+class GameActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gameView = GameView(2, 2, this)
-        setContentView(gameView)
+        // Get game parameters from MainActivity.
+        val humanPlayers = intent.getIntExtra(HUMANS, 1)
+        val computerPlayers = intent.getIntExtra(BOTS, 1)
+        val columns = intent.getIntExtra(COLUMNS, 3)
+        val rows = intent.getIntExtra(ROWS, 3)
 
+        val gameView = GameView(columns, rows, humanPlayers, computerPlayers, this)
+        setContentView(gameView)
         gameView.dotsBoxGame.addOnGameOverListener(gameOverListener)
     }
 
