@@ -38,13 +38,13 @@ class MainActivity : AppCompatActivity() {
 
         val columns = findViewById<SeekBar>(R.id.columns)
         val columnsText = findViewById<TextView>(R.id.columnsText)
-        columns.max = 10
+        columns.max = 9
         columns.progress = gameGridDefault
         columnsText.text = getString(R.string.slider_column_text, gameGridDefault)
 
         val rows = findViewById<SeekBar>(R.id.rows)
         val rowsText = findViewById<TextView>(R.id.rowsText)
-        rows.max = 10
+        rows.max = 9
         rows.progress = gameGridDefault
         rowsText.text = getString(R.string.slider_row_text, gameGridDefault)
 
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         columns.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                columnsText.text = getString(R.string.slider_column_text, progress)
+                columnsText.text = getString(R.string.slider_column_text, progress+1)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
         rows.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                rowsText.text = getString(R.string.slider_row_text, progress)
+                rowsText.text = getString(R.string.slider_row_text, progress+1)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, GameActivity::class.java).apply {
             putExtra(HUMANS, humanPlayers.progress)
             putExtra(BOTS, computerPlayers.progress)
-            putExtra(COLUMNS, columns.progress)
-            putExtra(ROWS, rows.progress)
+            putExtra(COLUMNS, columns.progress+1)
+            putExtra(ROWS, rows.progress+1)
 
         }
         startActivity(intent)

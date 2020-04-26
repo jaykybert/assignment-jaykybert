@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Dots &amp; Boxes</string>
     <string name="button_start_game">Start</string>
+    <string name="button_popup">Exit</string>
     <string name="slider_human_text">players: %1$d</string>
     <string name="slider_computer_text">bots: %1$d</string>
     <string name="slider_column_text">columns: %1$d</string>
     <string name="slider_row_text">rows: %1$d</string>
+    <string name="scores">Scores</string>
 </resources>

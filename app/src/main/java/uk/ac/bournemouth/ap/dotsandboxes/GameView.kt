@@ -22,8 +22,8 @@ import kotlin.math.roundToInt
 
 class GameView(private val numOfCols: Int,
                private val numOfRows: Int,
-               private val humanPlayers: Int,
-               private val computerPlayers: Int,
+               humanPlayers: Int,
+               computerPlayers: Int,
                context: Context?): View(context) {
 
     // Paints

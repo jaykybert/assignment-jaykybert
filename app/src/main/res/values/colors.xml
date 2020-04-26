@@ -9,7 +9,6 @@
     <color name="undrawnLineColor">#FFFFFF</color>
     <color name="drawnLineColor">#494949</color>
     <color name="unownedBoxColor">#DACBCB</color>
-
     <color name="player1Color">#FF6666</color>
     <color name="player2Color">#66B2FF</color>
     <color name="player3Color">#B2FF66</color>
@@ -20,5 +19,4 @@
     <color name="player8Color">#F99E58</color>
     <color name="player9Color">#FFFFFF</color>
     <color name="player10Color">#F517AB</color>
-
 </resources>
