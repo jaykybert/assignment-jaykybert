@@ -12,12 +12,13 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
     // Matrices
     override val boxes: Matrix<DotsAndBoxesGame.Box> = MutableMatrix(columns, rows, ::StudentBox)
-    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> = MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine) { x, y -> y % 2 != 0 || x < columns }
+    override var lines: MutableSparseMatrix<DotsAndBoxesGame.Line> =
+        MutableSparseMatrix(columns+1, (rows*2)+1, ::StudentLine) { x, y -> y % 2 != 0 || x < columns }
 
 
     // Player Tracking
     override val players: List<Player> = playerList.toList()
-    override val currentPlayer: Player get() = players[currentPlayerIdx] // Need error handling for 0 player games.
+    override val currentPlayer: Player get() = players[currentPlayerIdx]
     private var currentPlayerIdx: Int = 0
 
     /** Increments the index position which is used by the
@@ -42,11 +43,6 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             current.makeMove(this)
             current = currentPlayer
         }
-    }
-
-    // Start the game if the first player is a computer.
-    init {
-        playComputerTurns()
     }
 
 
@@ -121,7 +117,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                             if(box1 == box) {
                                 box.owningPlayer = currentPlayer
                                 boxMade = true
-                                    }
+                            }
                         }
                     }
                 }

@@ -26,8 +26,7 @@ class MainActivity : AppCompatActivity() {
         // SeekBars - Input
         val humanPlayers = findViewById<SeekBar>(R.id.humanPlayers)
         val humanPlayersText = findViewById<TextView>(R.id.humanPlayersText)
-        humanPlayers.max = 5
-        humanPlayers.progress = playersDefault
+        humanPlayers.max = 4
         humanPlayersText.text = getString(R.string.slider_human_text, playersDefault)
 
         val computerPlayers = findViewById<SeekBar>(R.id.computerPlayers)
@@ -39,19 +38,19 @@ class MainActivity : AppCompatActivity() {
         val columns = findViewById<SeekBar>(R.id.columns)
         val columnsText = findViewById<TextView>(R.id.columnsText)
         columns.max = 9
-        columns.progress = gameGridDefault
+        columns.progress = gameGridDefault-1
         columnsText.text = getString(R.string.slider_column_text, gameGridDefault)
 
         val rows = findViewById<SeekBar>(R.id.rows)
         val rowsText = findViewById<TextView>(R.id.rowsText)
         rows.max = 9
-        rows.progress = gameGridDefault
+        rows.progress = gameGridDefault-1
         rowsText.text = getString(R.string.slider_row_text, gameGridDefault)
 
 
         humanPlayers.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                humanPlayersText.text = getString(R.string.slider_human_text, progress)
+                humanPlayersText.text = getString(R.string.slider_human_text, progress+1)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -85,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     fun startGame(view: View) {
         val intent = Intent(this, GameActivity::class.java).apply {
-            putExtra(HUMANS, humanPlayers.progress)
+            putExtra(HUMANS, humanPlayers.progress+1)
             putExtra(BOTS, computerPlayers.progress)
             putExtra(COLUMNS, columns.progress+1)
             putExtra(ROWS, rows.progress+1)
