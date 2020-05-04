@@ -9,38 +9,51 @@
 
 
     <TextView
+            android:id="@+id/shuffleText"
+            android:layout_width="154dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="104dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/switch_shuffle_text"
+            android:textSize="25sp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
             android:id="@+id/computerPlayersText"
-            android:layout_width="107dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="44dp"
-            android:layout_marginEnd="56dp"
-            android:layout_marginRight="56dp"
+            android:layout_width="78dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="92dp"
+            android:layout_marginRight="92dp"
             android:text="@string/slider_computer_text"
             android:textSize="25sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
     <Button
-            android:id="@+id/button"
+            android:id="@+id/startGame"
             android:layout_width="122dp"
             android:layout_height="75dp"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="144dp"
             android:onClick="startGame"
             android:text="@string/button_start_game"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent" />
-
 
     <TextView
             android:id="@+id/humanPlayersText"
             android:layout_width="107dp"
             android:layout_height="50dp"
-            android:layout_marginStart="56dp"
-            android:layout_marginLeft="56dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="32dp"
             android:text="@string/slider_human_text"
             android:textSize="25sp"
             android:textStyle="italic"
@@ -49,32 +62,31 @@
 
     <SeekBar
             android:id="@+id/humanPlayers"
-            android:layout_width="104dp"
-            android:layout_height="114dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginTop="32dp"
+            android:layout_width="103dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="36dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
             android:id="@+id/computerPlayers"
-            android:layout_width="104dp"
-            android:layout_height="114dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginRight="80dp"
+            android:layout_width="94dp"
+            android:layout_height="69dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="92dp"
+            android:layout_marginRight="92dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
             android:id="@+id/columnsText"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:layout_marginStart="52dp"
-            android:layout_marginLeft="52dp"
-            android:layout_marginTop="156dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="180dp"
             android:text="@string/slider_column_text"
             android:textSize="25sp"
             android:textStyle="italic"
@@ -85,20 +97,19 @@
             android:id="@+id/columns"
             android:layout_width="104dp"
             android:layout_height="114dp"
-            android:layout_marginStart="56dp"
-            android:layout_marginLeft="56dp"
-            android:layout_marginTop="144dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="160dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
             android:id="@+id/rowsText"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:layout_marginTop="156dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginTop="180dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
             android:text="@string/slider_row_text"
             android:textSize="25sp"
             android:textStyle="italic"
@@ -109,9 +120,42 @@
             android:id="@+id/rows"
             android:layout_width="104dp"
             android:layout_height="114dp"
-            android:layout_marginTop="144dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginRight="80dp"
+            android:layout_marginTop="160dp"
+            android:layout_marginEnd="72dp"
+            android:layout_marginRight="72dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/computerDifficultyText"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="104dp"
+            android:text="@string/slider_difficulty_text"
+            android:textSize="25sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+            android:id="@+id/computerDifficulty"
+            android:layout_width="86dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="108dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+            android:id="@+id/shufflePlayers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="132dp"
+            android:layout_marginEnd="116dp"
+            android:layout_marginRight="116dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
