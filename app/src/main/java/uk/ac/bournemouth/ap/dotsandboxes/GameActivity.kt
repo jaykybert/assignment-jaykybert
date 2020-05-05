@@ -8,7 +8,6 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Get game parameters.
         val humanPlayers = intent.getIntExtra(HUMANS, 1)
         val computerPlayers = intent.getIntExtra(BOTS, 1)

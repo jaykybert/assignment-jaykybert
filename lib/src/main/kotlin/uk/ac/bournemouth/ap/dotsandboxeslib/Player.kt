@@ -33,5 +33,4 @@ abstract class ComputerPlayer : Player() {
      * @param game The game to make a move on.
      */
     abstract fun makeMove(game: DotsAndBoxesGame)
-
 }
