@@ -8,17 +8,18 @@ import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
 /** Human Player instance.
  *  Given a name.
  */
-class Human(private val name: String): HumanPlayer() {
+class Human(private val name: String="Player"): HumanPlayer() {
 
     override fun toString(): String { return name }
 }
+
 
 
 /** Bot Player instance.
  *  Given a name and difficulty (Int).
  *  Difficulty determines [makeMove].
  */
-class Computer(private val name: String, private val difficulty: Int) : ComputerPlayer() {
+class Computer(private val name: String="Bot", private val difficulty: Int=1) : ComputerPlayer() {
 
     override fun toString(): String { return name }
 
@@ -29,13 +30,6 @@ class Computer(private val name: String, private val difficulty: Int) : Computer
         /**
          *  Base-level difficulty - choose a random line that isn't drawn.
          */
-
-
-        // TODO: Reference the lines matrix directly??
-        // Test this by putting difficulty one one, and using the coordiantes
-        // from undrawnLines as an index for lines
-        // i.e. lines[undrawnLines.lineX, undrawnLines.lineY]
-
         fun difficultyOne() {
             val undrawnLines = game.lines.filter { !it.isDrawn }
             if (undrawnLines.isNotEmpty()) {

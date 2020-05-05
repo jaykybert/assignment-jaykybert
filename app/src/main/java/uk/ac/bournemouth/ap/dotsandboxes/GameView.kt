@@ -102,14 +102,13 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
             // Display Toast of the player scores.
             var playerScores = "Scores\n"
             for (player in scores) {
-                playerScores += if(player.first.toString().contains("Player"))
-                                    "${player.first}\t\t${player.second}\n"
-                                 else
-                                    "${player.first}\t\t\t\t${player.second}\n"
+                playerScores += if (player.first.toString().contains("Player"))
+                    "${player.first}\t\t${player.second}\n"
+                else
+                    "${player.first}\t\t\t\t${player.second}\n"
             }
-            val scoreToast = Toast.makeText(context, playerScores, Toast.LENGTH_LONG)
-            scoreToast.show()
-            scoreToast.show()
+            Toast.makeText(context, playerScores, Toast.LENGTH_LONG).show()
+
         }
     }
 
@@ -146,6 +145,9 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
         override fun onDown(event: MotionEvent): Boolean { return true }
 
         override fun onSingleTapUp(event: MotionEvent): Boolean {
+
+            if(dotsBoxGame.isFinished) { return true }
+
             val xPos: Float = event.x
             val yPos: Float = event.y
 
@@ -168,8 +170,6 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
             val xDotAxis: Int = floor(columnFloat).toInt()
             val yDotAxis: Int = floor(rowFloat).toInt()
 
-            // If deltas are equal, preference is given to first arg. So input is biased
-            // (slightly) towards producing horizontal lines.
             try {
                 if (minOf(yDelta, xDelta) == xDelta) {
                     if (aboveDot) { dotsBoxGame.lines[xDotAxis, (yDotAxis*2)-1].drawLine() }
@@ -193,10 +193,10 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         topBanner = height*0.08F // Top banner is 8% of screen height.
-        defaultTextPaint.textSize = topBanner*0.55F
+        defaultTextPaint.textSize = topBanner*0.50F
 
-        xSpacing = width / (numOfCols + 1).toFloat()
-        ySpacing = (height-topBanner) / (numOfRows + 1).toFloat()
+        xSpacing = width / (numOfCols+1).toFloat()
+        ySpacing = (height-topBanner) / (numOfRows+1).toFloat()
         spacing = minOf(xSpacing, ySpacing)
 
         // Scale lines and dots to grid size.
@@ -209,20 +209,21 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
         canvas.drawRect(0F, topBanner, width.toFloat(), height.toFloat(), backgroundPaint)
 
         val currentPlayerPaint = playerPaints[dotsBoxGame.players.indexOf(dotsBoxGame.currentPlayer)]
-            .apply { textSize = topBanner*0.55F }
+        currentPlayerPaint.apply { textSize = topBanner*0.55F }
 
         // Draw the top banner text, colour it according to the current player.
         if (dotsBoxGame.isFinished) { // Game Over - display winner(s) and respective points.
             val winner: List<Player> = dotsBoxGame.winner
             canvas.drawText("$winner ${if (winner.size == 1) "won" else "tied"}!",
-                spacing/4, topBanner*0.7F, if(winner.size==1) currentPlayerPaint else defaultTextPaint)
+                15F, topBanner*0.7F, if(winner.size==1) currentPlayerPaint else defaultTextPaint)
         }
         else { // Game in progress
             canvas.drawText(dotsBoxGame.currentPlayer.toString() + "'s Turn",
-                spacing/4, topBanner*0.7F, currentPlayerPaint)
+                15F, topBanner*0.7F, currentPlayerPaint)
 
             // Current player score.
-            canvas.drawText("Player Score: ${dotsBoxGame.getScores()[dotsBoxGame.players.indexOf(dotsBoxGame.currentPlayer)]}",
+            canvas.drawText("Player Score: ${dotsBoxGame.getScores()
+                    [dotsBoxGame.players.indexOf(dotsBoxGame.currentPlayer)]}",
                            width-350F, topBanner*0.7F, currentPlayerPaint)
         }
 

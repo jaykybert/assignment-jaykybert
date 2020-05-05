@@ -9,4 +9,6 @@
     <string name="slider_row_text">rows: %1$d</string>
     <string name="switch_shuffle_text">shuffle: %1$s </string>
     <string name="scores">Scores</string>
+    <string name="restart_game">Restart</string>
+    <string name="return_to_menu">Home</string>
 </resources>

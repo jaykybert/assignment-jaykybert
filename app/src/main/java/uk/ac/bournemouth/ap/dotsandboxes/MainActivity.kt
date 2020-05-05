@@ -18,48 +18,31 @@ const val SHUFFLE = "uk.ac.bournemouth.ap.dotsandboxes.SHUFFLE"
 
 class MainActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Default values on SeekBars.
-        val playersDefault = 1
-        val gameGridDefault = 3
-
         // SeekBars - set default and max values.
-        val humanPlayers = findViewById<SeekBar>(R.id.humanPlayers)
-        val humanPlayersText = findViewById<TextView>(R.id.humanPlayersText)
         humanPlayers.max = 5
         humanPlayers.progress = 1
-        humanPlayersText.text = getString(R.string.slider_human_text, playersDefault)
+        humanPlayersText.text = getString(R.string.slider_human_text, 1)
 
-        val computerPlayers = findViewById<SeekBar>(R.id.computerPlayers)
-        val computerPlayersText = findViewById<TextView>(R.id.computerPlayersText)
         computerPlayers.max = 5
-        computerPlayers.progress = playersDefault
-        computerPlayersText.text = getString(R.string.slider_computer_text, playersDefault)
+        computerPlayers.progress = 1
+        computerPlayersText.text = getString(R.string.slider_computer_text, 1)
 
-        val computerDifficulty = findViewById<SeekBar>(R.id.computerDifficulty)
-        val computerDifficultyText = findViewById<TextView>(R.id.computerDifficultyText)
         computerDifficulty.max = 2
         computerDifficulty.progress = 0
         computerDifficultyText.text = getString(R.string.slider_difficulty_text, 1)
 
-        val columns = findViewById<SeekBar>(R.id.columns)
-        val columnsText = findViewById<TextView>(R.id.columnsText)
         columns.max = 14
-        columns.progress = gameGridDefault-1
-        columnsText.text = getString(R.string.slider_column_text, gameGridDefault)
+        columns.progress = 2
+        columnsText.text = getString(R.string.slider_column_text, 3)
 
-        val rows = findViewById<SeekBar>(R.id.rows)
-        val rowsText = findViewById<TextView>(R.id.rowsText)
         rows.max = 14
-        rows.progress = gameGridDefault-1
-        rowsText.text = getString(R.string.slider_row_text, gameGridDefault)
+        rows.progress = 2
+        rowsText.text = getString(R.string.slider_row_text, 3)
 
-        val shufflePlayers = findViewById<Switch>(R.id.shufflePlayers)
-        val shuffleText = findViewById<TextView>(R.id.shuffleText)
         shuffleText.text = getString(R.string.switch_shuffle_text, "no")
 
 
@@ -122,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         if(humanPlayers.progress == 0 && computerPlayers.progress == 0) {
             Toast.makeText(this, "Please select the number of players.", Toast.LENGTH_SHORT).show()
         }
+
         else {
             val intent = Intent(this, GameActivity::class.java).apply {
                 putExtra(HUMANS, humanPlayers.progress)

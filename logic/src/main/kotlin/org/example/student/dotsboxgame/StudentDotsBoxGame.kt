@@ -29,7 +29,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         }
     }
 
-    // Bot-only games shouldn't wait for user input to start.
+    // Bot-only games shouldn't wait for input to start.
     init {
         playComputerTurns()
     }
@@ -43,7 +43,6 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
      * Attach the score to the respective [Player], and return as a list of pairs.
      */
     fun playerScores(): List<Pair<Player, Int>> {
-        // TODO: Sort list by score descending.
         val playerScoreList: MutableList<Pair<Player, Int>> = mutableListOf()
         val scoreList = getScores()
         for(player in players.indices) {
@@ -140,9 +139,11 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             fireGameChange()
 
             // Check finish condition, retrieve scores.
-            if(isFinished) { fireGameOver(playerScores()) }
+            if(isFinished) {
+                fireGameOver(playerScores())
+            }
 
-            else if(!boxMade) { // Change the player if no box was made.
+            else if(!boxMade) { // Change the player if no box was made. // was else if
                 currentPlayerIdx = (currentPlayerIdx+1) % players.size
                 playComputerTurns()
             }
