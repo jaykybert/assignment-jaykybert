@@ -5,7 +5,7 @@ Dots and Boxes Extensions Implemented
 
 Part 1 - Logic
   - Support for any grid dimensions: This is capped to 15x15 on the UI.
-  - Support for 5 players and 5 bots simultaneously: Capped at 10 due to the need for lots of paint objects causing clutter.
+  - Support for 5 players and 5 bots simultaneously: Capped at 10 total players due to the need for lots of paint objects causing       clutter.
   - Improved AI with 3 levels of difficulty: Making random moves, avoiding 2-line boxes, and completing 3-line boxes.
 
 Part 2 - User Interface
@@ -16,3 +16,4 @@ Part 2 - User Interface
   - End of game text displaying the winner (accounts for ties).
   - Toast messages that notify the user if a line is already drawn, out-of-bounds, or if they haven't picked any players in the menu.
   - Toast message at the end of the game with all player names and their respective scores.
+  - Refresh icon on the toolbar that allows for a player to restart the game with the current settings.
