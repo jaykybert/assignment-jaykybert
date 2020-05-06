@@ -92,8 +92,8 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
                     return when (lineY) {
                         0                   -> Pair(null, boxes[x, y]) // No box above.
-                        lines.maxHeight - 1 -> Pair(boxes[x, y - 1], null) // No box below.
-                        else                -> Pair(boxes[x, y - 1], boxes[x, y])
+                        lines.maxHeight - 1 -> Pair(boxes[x, y-1], null) // No box below.
+                        else                -> Pair(boxes[x, y-1], boxes[x, y])
                     }
                 }
                 else {
@@ -102,8 +102,8 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
                     return when (lineX) {
                         0                  -> Pair(null, boxes[x, y]) // No box on the left.
-                        lines.maxWidth - 1 -> Pair(boxes[x - 1, y], null) // No box on the right.
-                        else               -> Pair(boxes[x - 1, y], boxes[x, y])
+                        lines.maxWidth - 1 -> Pair(boxes[x-1, y], null) // No box on the right.
+                        else               -> Pair(boxes[x-1, y], boxes[x, y])
                     }
                 }
             }
@@ -113,31 +113,23 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             if (lines[lineX, lineY].isDrawn) {
                 throw LineAlreadyDrawnException(lineX, lineY)
             }
-
             if(!lines.isValid(lineX, lineY)) {
                 throw IndexOutOfBoundsException()
             }
             isDrawn = true
             var boxMade = false
-            val box1: StudentBox? = adjacentBoxes.first
-            val box2: StudentBox? = adjacentBoxes.second
 
-            // Check if the all the boxes' bounding lines are now drawn.
-            if(box1 != null && box1.boundingLines.all { it.isDrawn }) {
-                boxes[box1.boxX, box1.boxY].owningPlayer = currentPlayer
-                boxMade = true
-            }
-            if(box2 != null && box2.boundingLines.all { it.isDrawn }) {
-                boxes[box2.boxX, box2.boxY].owningPlayer = currentPlayer
-                boxMade = true
+            for(adjBox in adjacentBoxes.toList().filterNotNull()) {
+                if(adjBox.boundingLines.all { it.isDrawn }) {
+                    boxes[adjBox.boxX, adjBox.boxY].owningPlayer = currentPlayer
+                    boxMade = true
+                }
             }
             fireGameChange()
-
             // Check finish condition, retrieve scores.
             if(isFinished) {
                 fireGameOver(playerScores())
             }
-
             else if(!boxMade) { // Change the player if no box was made.
                 currentPlayerIdx = (currentPlayerIdx+1) % players.size
                 playComputerTurns()

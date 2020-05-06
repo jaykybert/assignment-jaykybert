@@ -107,7 +107,7 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
                 else
                     "${player.first}\t\t\t\t${player.second}\n"
             }
-            Toast.makeText(context, playerScores, Toast.LENGTH_LONG).show()
+            repeat(2) { Toast.makeText(context, playerScores, Toast.LENGTH_LONG).show() }
         }
     }
 
@@ -215,7 +215,9 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
             // Display winner(s).
             val winner: List<Player> = dotsBoxGame.winner
             canvas.drawText("$winner ${if (winner.size == 1) "won" else "tied"}!",
-                15F, topBanner*0.7F, if(winner.size==1) currentPlayerPaint else defaultTextPaint)
+                15F, topBanner*0.7F, if(winner.size==1)
+                                            playerPaints[dotsBoxGame.players.indexOf(winner[0])]
+                                    else    defaultTextPaint)
         }
         else {
             // Current player turn.
