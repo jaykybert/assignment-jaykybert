@@ -9,9 +9,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import org.example.student.dotsboxgame.Computer
-import org.example.student.dotsboxgame.Human
-import org.example.student.dotsboxgame.LineAlreadyDrawnException
+import uk.ac.bournemouth.ap.dotsandboxeslib.Computer
+import uk.ac.bournemouth.ap.dotsandboxeslib.Human
+import uk.ac.bournemouth.ap.dotsandboxeslib.LineAlreadyDrawnException
 import org.example.student.dotsboxgame.StudentDotsBoxGame
 import uk.ac.bournemouth.ap.dotsandboxeslib.*
 import kotlin.math.abs
@@ -83,7 +83,7 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
             color = ContextCompat.getColor(context, R.color.player10Color) })
 
 
-    // Dot Spacing Information - spacings are given values in onDraw, used in gesture detection.
+    // Dot spacing information - spacings are given values in onDraw, used in gesture detection.
     private var xSpacing: Float = 0F
     private var ySpacing: Float = 0F
     private var spacing: Float = 0F
@@ -108,7 +108,6 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
                     "${player.first}\t\t\t\t${player.second}\n"
             }
             Toast.makeText(context, playerScores, Toast.LENGTH_LONG).show()
-
         }
     }
 
@@ -116,8 +115,8 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
     // Game Instance
     var dotsBoxGame: StudentDotsBoxGame
     init {
-        val players: MutableList<Player> = mutableListOf()
         // Create the Player objects, add them to the list.
+        val players: MutableList<Player> = mutableListOf()
         for (human in 1..humanPlayers) {
             players.add(Human("Player $human"))
         }
@@ -209,15 +208,17 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
         canvas.drawRect(0F, topBanner, width.toFloat(), height.toFloat(), backgroundPaint)
 
         val currentPlayerPaint = playerPaints[dotsBoxGame.players.indexOf(dotsBoxGame.currentPlayer)]
-        currentPlayerPaint.apply { textSize = topBanner*0.55F }
+        currentPlayerPaint.apply { textSize = topBanner*0.50F }
 
         // Draw the top banner text, colour it according to the current player.
-        if (dotsBoxGame.isFinished) { // Game Over - display winner(s) and respective points.
+        if (dotsBoxGame.isFinished) {
+            // Display winner(s).
             val winner: List<Player> = dotsBoxGame.winner
             canvas.drawText("$winner ${if (winner.size == 1) "won" else "tied"}!",
                 15F, topBanner*0.7F, if(winner.size==1) currentPlayerPaint else defaultTextPaint)
         }
-        else { // Game in progress
+        else {
+            // Current player turn.
             canvas.drawText(dotsBoxGame.currentPlayer.toString() + "'s Turn",
                 15F, topBanner*0.7F, currentPlayerPaint)
 
@@ -226,7 +227,7 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
                     [dotsBoxGame.players.indexOf(dotsBoxGame.currentPlayer)]}",
                            width-350F, topBanner*0.7F, currentPlayerPaint)
         }
-
+        // Draw game grid.
         for (column in 0..numOfCols) {
             for (row in 0..numOfRows) {
                 val x = column * spacing + (spacing/2)
@@ -244,9 +245,9 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
                     // Draw the square - box coordinates are equal to the top-left dot coordinates of said box.
                     if (row != numOfRows) {
                         val boxOwner: Player? = dotsBoxGame.boxes[column, row].owningPlayer
-                        // Set paint equal to the corresponding index in the playerPaints list.
+
                         paint = if (boxOwner != null) { playerPaints[dotsBoxGame.players.indexOf(boxOwner)] }
-                        else { unownedBoxPaint }
+                                else { unownedBoxPaint }
 
                         canvas.drawRect(x+dotRadius, y+dotRadius, x+spacing-dotRadius, y+spacing-dotRadius, paint)
                     }

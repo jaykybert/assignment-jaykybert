@@ -1,4 +1,4 @@
-package org.example.student.dotsboxgame
+package uk.ac.bournemouth.ap.dotsandboxeslib
 
 
 /** Custom exception that should be used when a Line object is created with the same

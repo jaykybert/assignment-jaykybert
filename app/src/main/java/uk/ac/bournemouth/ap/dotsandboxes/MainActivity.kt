@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import kotlinx.android.synthetic.main.activity_main.*
+
 
 // Intent Keys
 const val HUMANS = "uk.ac.bournemouth.ap.dotsandboxes.HUMANS"
@@ -16,83 +16,98 @@ const val ROWS = "uk.ac.bournemouth.ap.dotsandboxes.ROWS"
 const val SHUFFLE = "uk.ac.bournemouth.ap.dotsandboxes.SHUFFLE"
 
 
+/** The Main Menu.
+ *  Allows the user to change various game settings and launch the game.
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // SeekBars - set default and max values.
-        humanPlayers.max = 5
-        humanPlayers.progress = 1
-        humanPlayersText.text = getString(R.string.slider_human_text, 1)
+        // Set the minimum, maximum and default values of the SeekBars (and related text).
+        val getHumans = findViewById<SeekBar>(R.id.humanPlayers)
+        getHumans.max = 5
+        getHumans.progress = 1
+        val getHumansText = findViewById<TextView>(R.id.humanPlayersText)
+        getHumansText.text = getString(R.string.slider_human_text, 1)
 
-        computerPlayers.max = 5
-        computerPlayers.progress = 1
-        computerPlayersText.text = getString(R.string.slider_computer_text, 1)
+        val getBots = findViewById<SeekBar>(R.id.computerPlayers)
+        getBots.max = 5
+        getBots.progress = 1
+        val getBotsText = findViewById<TextView>(R.id.computerPlayersText)
+        getBotsText.text = getString(R.string.slider_computer_text, 1)
 
-        computerDifficulty.max = 2
-        computerDifficulty.progress = 0
-        computerDifficultyText.text = getString(R.string.slider_difficulty_text, 1)
+        val getDifficulty = findViewById<SeekBar>(R.id.computerDifficulty)
+        getDifficulty.max = 2
+        getDifficulty.progress = 0
+        val getDifficultyText = findViewById<TextView>(R.id.computerDifficultyText)
+        getDifficultyText.text = getString(R.string.slider_difficulty_text, 1)
 
-        columns.max = 14
-        columns.progress = 2
-        columnsText.text = getString(R.string.slider_column_text, 3)
+        val getColumns = findViewById<SeekBar>(R.id.columns)
+        getColumns.max = 14
+        getColumns.progress = 4
+        val getColumnsText = findViewById<TextView>(R.id.columnsText)
+        getColumnsText.text = getString(R.string.slider_column_text, 5)
 
-        rows.max = 14
-        rows.progress = 2
-        rowsText.text = getString(R.string.slider_row_text, 3)
+        val getRows = findViewById<SeekBar>(R.id.rows)
+        getRows.max = 14
+        getRows.progress = 4
+        val getRowsText = findViewById<TextView>(R.id.rowsText)
+        getRowsText.text = getString(R.string.slider_row_text, 5)
 
-        shuffleText.text = getString(R.string.switch_shuffle_text, "no")
+        val getShuffle = findViewById<Switch>(R.id.shufflePlayers)
+        val getShuffleText = findViewById<TextView>(R.id.shuffleText)
+        getShuffleText.text = getString(R.string.switch_shuffle_text, "no")
 
-
-        // SeekBar Listeners - update text when changed.
-        humanPlayers.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+        // SeekBar Listeners - update the related TextView when changed.
+        getHumans.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                humanPlayersText.text = getString(R.string.slider_human_text, progress)
+                getHumansText.text = getString(R.string.slider_human_text, progress)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
 
-        computerPlayers.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+        getBots.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                computerPlayersText.text = getString(R.string.slider_computer_text, progress)
+                getBotsText.text = getString(R.string.slider_computer_text, progress)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
 
-        computerDifficulty.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+        getDifficulty.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                computerDifficultyText.text = getString(R.string.slider_difficulty_text, progress+1)
+                getDifficultyText.text = getString(R.string.slider_difficulty_text, progress+1)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
 
-        columns.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+        getColumns.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                columnsText.text = getString(R.string.slider_column_text, progress+1)
+                getColumnsText.text = getString(R.string.slider_column_text, progress+1)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
 
-        rows.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+        getRows.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                rowsText.text = getString(R.string.slider_row_text, progress+1)
+                getRowsText.text = getString(R.string.slider_row_text, progress+1)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
 
         // Set shuffle to whether the switch is checked.
-        shufflePlayers.setOnCheckedChangeListener { _, isChecked ->
+        getShuffle.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
-                shuffleText.text = getString(R.string.switch_shuffle_text, "yes")
-            } else {
-                shuffleText.text = getString(R.string.switch_shuffle_text, "no")
+                getShuffleText.text = getString(R.string.switch_shuffle_text, "yes")
+            }
+            else {
+                getShuffleText.text = getString(R.string.switch_shuffle_text, "no")
             }
         }
     }
@@ -102,18 +117,18 @@ class MainActivity : AppCompatActivity() {
      *  Launches the [GameActivity] class with the data from the SeekBars.
      */
     fun startGame(view: View) {
-        if(humanPlayers.progress == 0 && computerPlayers.progress == 0) {
-            Toast.makeText(this, "Please select the number of players.", Toast.LENGTH_SHORT).show()
+        if(findViewById<SeekBar>(R.id.humanPlayers).progress == 0 &&
+                findViewById<SeekBar>(R.id.computerPlayers).progress == 0) {
+            Toast.makeText(this, "Please specify the number of players.", Toast.LENGTH_SHORT).show()
         }
-
         else {
             val intent = Intent(this, GameActivity::class.java).apply {
-                putExtra(HUMANS, humanPlayers.progress)
-                putExtra(BOTS, computerPlayers.progress)
-                putExtra(DIFFICULTY, computerDifficulty.progress + 1)
-                putExtra(COLUMNS, columns.progress + 1)
-                putExtra(ROWS, rows.progress + 1)
-                putExtra(SHUFFLE, shufflePlayers.isChecked)
+                putExtra(HUMANS, findViewById<SeekBar>(R.id.humanPlayers).progress)
+                putExtra(BOTS, findViewById<SeekBar>(R.id.computerPlayers).progress)
+                putExtra(DIFFICULTY, findViewById<SeekBar>(R.id.computerDifficulty).progress + 1)
+                putExtra(COLUMNS, findViewById<SeekBar>(R.id.columns).progress + 1)
+                putExtra(ROWS, findViewById<SeekBar>(R.id.rows).progress + 1)
+                putExtra(SHUFFLE, findViewById<Switch>(R.id.shufflePlayers).isChecked)
             }
             startActivity(intent)
         }

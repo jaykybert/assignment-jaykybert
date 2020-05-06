@@ -29,18 +29,17 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
         }
     }
 
-    // Bot-only games shouldn't wait for input to start.
+    // Human may not be the first to make a move due to bot-only games and shuffled player lists.
     init {
         playComputerTurns()
     }
 
-    // Game is finished when all lines are drawn/all boxes are owned.
     override val isFinished: Boolean
         get() = lines.all { it.isDrawn }
 
 
     /**
-     * Attach the score to the respective [Player], and return as a list of pairs.
+     * Attach the scores from [getScores] to the respective [Player]s, and return as a list of pairs.
      */
     fun playerScores(): List<Pair<Player, Int>> {
         val playerScoreList: MutableList<Pair<Player, Int>> = mutableListOf()
@@ -60,6 +59,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
             val scores = playerScores()
             val winnerList: MutableList<Player> = mutableListOf()
             var winningScore = 0
+
             for(player in scores) {
                 if(player.second > winningScore) {
                     winningScore = player.second
@@ -85,31 +85,26 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
 
         override val adjacentBoxes: Pair<StudentBox?, StudentBox?>
             get() {
-                if(lineY % 2 == 0) { // Horizontal Lines - adjacent boxes are above/below.
+                // Horizontal Lines - adjacent boxes are above/below.
+                if (lineY % 2 == 0) {
                     val x: Int = lineX
-                    val y: Int = lineY / 2 // This is the y of the box below, -1 for box above.
+                    val y: Int = lineY / 2 // This is y of the box below, -1 for box above.
 
-                    // Edge Cases
-                    if(lineY == 0) { // First Row - no box above.
-                        return Pair(null, boxes[x, y])
+                    return when (lineY) {
+                        0                   -> Pair(null, boxes[x, y]) // No box above.
+                        lines.maxHeight - 1 -> Pair(boxes[x, y - 1], null) // No box below.
+                        else                -> Pair(boxes[x, y - 1], boxes[x, y])
                     }
-                    else if(lineY == lines.maxHeight-1) { // Bottom Row - no box below.
-                        return Pair(boxes[x, y-1], null)
-                    }
-                    return Pair(boxes[x, y-1], boxes[x, y])
                 }
-                else { // Vertical Lines - adjacent boxes are left/right.
+                else {
                     val x: Int = lineX
                     val y: Int = (lineY - 1) / 2
 
-                    // Edge Cases
-                    if(lineX == 0) { // Left-most Column - no box on left.
-                        return Pair(null, boxes[x, y])
+                    return when (lineX) {
+                        0                  -> Pair(null, boxes[x, y]) // No box on the left.
+                        lines.maxWidth - 1 -> Pair(boxes[x - 1, y], null) // No box on the right.
+                        else               -> Pair(boxes[x - 1, y], boxes[x, y])
                     }
-                    else if(lineX == lines.maxWidth-1) { // Right-most Column - no box on right.
-                        return Pair(boxes[x-1, y], null)
-                    }
-                    return Pair<StudentBox?, StudentBox?>(boxes[x-1, y], boxes[x, y])
                 }
             }
 
@@ -143,7 +138,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, playerList: List<Player>) : Ab
                 fireGameOver(playerScores())
             }
 
-            else if(!boxMade) { // Change the player if no box was made. // was else if
+            else if(!boxMade) { // Change the player if no box was made.
                 currentPlayerIdx = (currentPlayerIdx+1) % players.size
                 playComputerTurns()
             }

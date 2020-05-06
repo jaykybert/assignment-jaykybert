@@ -1,8 +1,4 @@
-package org.example.student.dotsboxgame
-
-import uk.ac.bournemouth.ap.dotsandboxeslib.ComputerPlayer
-import uk.ac.bournemouth.ap.dotsandboxeslib.DotsAndBoxesGame
-import uk.ac.bournemouth.ap.dotsandboxeslib.HumanPlayer
+package uk.ac.bournemouth.ap.dotsandboxeslib
 
 
 /** Human Player instance.
@@ -16,7 +12,7 @@ class Human(private val name: String="Player"): HumanPlayer() {
 
 
 /** Bot Player instance.
- *  Given a name and difficulty (Int).
+ *  Given a name and difficulty.
  *  Difficulty determines [makeMove].
  */
 class Computer(private val name: String="Bot", private val difficulty: Int=1) : ComputerPlayer() {
@@ -25,7 +21,7 @@ class Computer(private val name: String="Bot", private val difficulty: Int=1) : 
 
     override fun makeMove(game: DotsAndBoxesGame) {
 
-        var moveMade = false // Prevents computers making multiple moves in the same turn.
+        var moveMade = false // Prevent computers making multiple moves in the same turn.
 
         /**
          *  Base-level difficulty - choose a random line that isn't drawn.
@@ -38,19 +34,19 @@ class Computer(private val name: String="Bot", private val difficulty: Int=1) : 
 
         }
 
-        /** Second difficulty - draws lines in boxes with only one other line,
+        /** Second difficulty - draw line in boxes that have 0 or 1 lines currently drawn,
          *  avoiding any two line boxes. If none available, call difficultyOne().
          */
         fun difficultyTwo() {
             for (box in game.boxes) {
                 val undrawnLines = box.boundingLines.filter { !it.isDrawn }
-                if (undrawnLines.size == 3) {
+                if (undrawnLines.size >= 3 ) {
                     undrawnLines.random().drawLine()
                     moveMade = true
                     break
                 }
             }
-            if(!moveMade) { difficultyOne() } // Condition not met - fallback to difficulty one.
+            if(!moveMade) { difficultyOne() } // Move not made - fallback to difficulty one.
         }
 
         /** Third difficulty - completes boxes with three lines drawn.
@@ -66,7 +62,7 @@ class Computer(private val name: String="Bot", private val difficulty: Int=1) : 
                     break
                 }
             }
-            if (!moveMade) { difficultyTwo() } // Condition not met - fallback to difficulty two.
+            if (!moveMade) { difficultyTwo() } // Move not made - fallback to difficulty two.
         }
         // Select the difficulty.
         when(difficulty) {
