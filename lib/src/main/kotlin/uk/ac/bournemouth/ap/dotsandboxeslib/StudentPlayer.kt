@@ -10,7 +10,6 @@ class Human(private val name: String="Player"): HumanPlayer() {
 }
 
 
-
 /** Bot Player instance.
  *  Given a name and difficulty.
  *  Difficulty determines [makeMove].
@@ -19,6 +18,10 @@ class Computer(private val name: String="Bot", private val difficulty: Int=1) : 
 
     override fun toString(): String { return name }
 
+    /**
+     *  Determine what line to draw. Three difficulties that fall to the
+     *  next lowest difficulty if the condition isn't met.
+     */
     override fun makeMove(game: DotsAndBoxesGame) {
 
         var moveMade = false // Prevent computers making multiple moves in the same turn.
@@ -49,7 +52,7 @@ class Computer(private val name: String="Bot", private val difficulty: Int=1) : 
             if(!moveMade) { difficultyOne() } // Move not made - fallback to difficulty one.
         }
 
-        /** Third difficulty - completes boxes with three lines drawn.
+        /** Third difficulty - complete boxes with three lines already drawn.
          *  If none available, call difficultyTwo().
          */
         fun difficultyThree() {

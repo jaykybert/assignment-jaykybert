@@ -214,10 +214,9 @@ class GameView(private val numOfCols: Int, private val numOfRows: Int,
         if (dotsBoxGame.isFinished) {
             // Display winner(s).
             val winner: List<Player> = dotsBoxGame.winner
-            canvas.drawText("$winner ${if (winner.size == 1) "won" else "tied"}!",
-                15F, topBanner*0.7F, if(winner.size==1)
-                                            playerPaints[dotsBoxGame.players.indexOf(winner[0])]
-                                    else    defaultTextPaint)
+            canvas.drawText("$winner ${if(winner.size == 1) "won" else "tied"}!", 15F, topBanner*0.7F,
+                            if(winner.size==1) playerPaints[dotsBoxGame.players.indexOf(winner[0])]
+                            else defaultTextPaint)
         }
         else {
             // Current player turn.
