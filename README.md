@@ -3,10 +3,14 @@ assignment-jaykybert created by GitHub Classroom
 
 Dots and Boxes Extensions Implemented
 
+---
+
 Part 1 - Logic
   - Support for any grid dimensions: This is capped to 15x15 on the UI.
   - Support for 5 players and 5 bots simultaneously: Capped at 10 total players due to the need for lots of paint objects causing       clutter.
   - Improved AI with 3 levels of difficulty: Making random moves, avoiding 2-line boxes, and completing 3-line boxes.
+
+---
 
 Part 2 - User Interface
   - Main Menu where the user can change players, bots, difficulty, columns, rows, and whether to shuffle the player list.
